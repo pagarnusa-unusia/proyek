@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Pendaftaran - Salam Pagar Nusa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        /* CSS Styling (Ditambahkan sedikit perbaikan dan styling error) */
+        :root {
+            --primary-color: #0b7f43; /* Hijau Pagar Nusa */
+            --secondary-color: #1f2937; /* Biru gelap untuk teks/tombol Back */
+            --light-bg: #f3f4f6;
+            --border-color: #d1d5db;
+            --success-color: #10b981; /* Hijau untuk status selesai */
+            --error-color: #ef4444; /* Merah untuk error */
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family);
+        }
+
+        body {
+            background-color: var(--light-bg);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* --- FORM CONTAINER & HEADER --- */
+        .form-container {
+            width: 100%;
+            max-width: 650px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            margin: 20px 0;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            width: 70px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+
+        .header h2 {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+
+        /* --- STEP INDICATOR (PROGRESS BAR) --- */
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            position: relative;
+            padding: 0 10px;
+        }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            right: 10px;
+            height: 4px;
+            background-color: var(--border-color);
+            z-index: 5; 
+            transform: translateY(-50%);
+        }
+
+        .step-indicator::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            height: 4px;
+            background-color: var(--primary-color);
+            width: var(--progress-width, 0%); 
+            z-index: 6;
+            transition: width 0.4s ease-in-out;
+            transform: translateY(-50%);
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            cursor: pointer;
+            z-index: 10;
+            background: white;
+            border-radius: 50%;
+            padding: 5px;
+        }
+        
+        .step:not(:last-child) {
+            margin-right: -10px;
+        }
+        
+        .step-circle {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: var(--border-color);
+            color: #777;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            margin-bottom: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 0 0 4px white;
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            color: #777;
+            text-align: center;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .step.active .step-circle {
+            background-color: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .step.active .step-label {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .step.completed .step-circle {
+            background-color: var(--success-color);
+            color: white;
+            box-shadow: 0 0 0 4px white, 0 0 0 6px var(--success-color);
+        }
+        
+        .step.completed .step-label {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        .step-circle i {
+            font-size: 1rem;
+        }
+
+
+        /* --- FORM FIELDS & GROUPS --- */
+        .form-step {
+            display: none;
+            padding-top: 10px;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.95rem;
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-control, .select-control {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-control:focus, .select-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(11, 127, 67, 0.2);
+        }
+        
+        /* Error Styling */
+        .form-control.input-error, .select-control.input-error {
+            border-color: var(--error-color) !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+        }
+
+        .input-icon-group {
+            position: relative;
+        }
+
+        .input-icon-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            pointer-events: none;
+            transition: color 0.3s;
+        }
+        
+        .input-icon-group input {
+            padding-left: 45px;
+        }
+
+        .input-icon-group:focus-within i {
+            color: var(--primary-color);
+        }
+        
+        /* Checkbox/Radio Styling */
+        .checkbox-group, .radio-group {
+            padding: 10px;
+            border: 1px solid var(--border-color); /* Tambahkan border untuk group */
+            border-radius: 10px;
+        }
+        
+        .checkbox-group.error-border, .radio-group.error-border {
+             border-color: var(--error-color) !important;
+        }
+
+        .radio-group label:first-child {
+            display: block;
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        .checkbox-item, .radio-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-item label, .radio-item label {
+            cursor: pointer;
+            margin-left: 5px;
+            font-weight: 400; /* Normalkan font-weight di sini */
+            margin-bottom: 0;
+            color: var(--secondary-color);
+        }
+        
+        .checkbox-item input[type="checkbox"],
+        .radio-item input[type="radio"] {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-color);
+        }
+        
+        .input-hint {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 8px;
+            display: block;
+            line-height: 1.4;
+        }
+        
+        /* File Input Styling (Khusus) */
+        .file-upload-container {
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+            transition: border-color 0.3s;
+            cursor: pointer;
+        }
+        
+        .file-upload-container.error-border {
+             border-color: var(--error-color) !important;
+        }
+
+        .file-upload-container label {
+            margin-bottom: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .file-upload-container i {
+            color: var(--primary-color) !important;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .file-input {
+            opacity: 0; /* Sembunyikan input asli */
+            position: absolute;
+            width: 0;
+            height: 0;
+        }
+        
+        /* Teks nama file untuk feedback */
+        .file-name-display {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            font-style: italic;
+            margin-top: 5px;
+            display: block;
+        }
+
+
+        /* --- ACTION BUTTONS --- */
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            gap: 15px;
+        }
+        
+        /* Tombol Peningkatan */
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 6px rgba(11, 127, 67, 0.2);
+            flex-grow: 1; /* Agar tombol Next/Submit mengambil sisa ruang */
+        }
+
+        .btn-primary:hover {
+            background-color: #086b36;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #374151;
+        }
+
+        /* --- RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 25px;
+                margin: 0;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            body {
+                padding: 0;
+            }
+            
+            .header h2 {
+                font-size: 1.5rem;
+            }
+
+            .step-indicator {
+                padding: 0 5px;
+            }
+
+            .step-label {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <div class="header">
+        <div class="logo">
+            <img src="logopn.png" alt="Logo Pagar Nusa">
+        </div>
+        <h2>Form Pendaftaran Anggota</h2>
+        <a href="salampagarnusa.html" style="font-size: 0.8rem; color: #9ca3af;">&larr; Kembali ke Sign In</a>
+    </div>
+
+    <div class="step-indicator">
+        <div class="step active" data-step="1">
+            <div class="step-circle"><i class="fa-solid fa-user"></i></div>
+            <div class="step-label">Data Diri</div>
+        </div>
+        <div class="step" data-step="2">
+            <div class="step-circle"><i class="fa-solid fa-graduation-cap"></i></div>
+            <div class="step-label">Organisasi & Lokasi</div>
+        </div>
+        <div class="step" data-step="3">
+            <div class="step-circle"><i class="fa-solid fa-building"></i></div>
+            <div class="step-label">Institusi Terkait</div>
+        </div>
+        <div class="step" data-step="4">
+            <div class="step-circle"><i class="fa-solid fa-upload"></i></div>
+            <div class="step-label">Unggah Berkas</div>
+        </div>
+    </div>
+    
+    <form id="registrationForm">
+        
+        <div class="form-step active" id="step1">
+            <div class="form-group">
+                <label for="nik">NIK*</label>
+                <div class="input-icon-group">
+                    <i class="fa-solid fa-id-card"></i>
+                    <input type="text" id="nik" class="form-control" placeholder="NIK sesuai KTP" pattern="[0-9]{8,16}" title="NIK harus 8 sampai 16 digit angka." required>
+                </div>
+                <span class="input-hint">NIK sesuai KTP (hanya angka 8-16 digit)</span>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email*</label>
+                <div class="input-icon-group">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="email" class="form-control" placeholder="email@contoh.com" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="namaLengkap">Nama Lengkap*</label>
+                <div class="input-icon-group">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="namaLengkap" class="form-control" placeholder="Nama Lengkap Tanpa Gelar" required>
+                </div>
+                <span class="input-hint">Nama tanpa gelar dan karakter spesial</span>
+            </div>
+
+            <div class="form-group">
+                <label for="tempatLahir">Tempat Lahir*</label>
+                <div class="input-icon-group">
+                     <i class="fa-solid fa-city"></i>
+                     <input type="text" id="tempatLahir" class="form-control" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="tanggalLahir">Tanggal Lahir*</label>
+                <div class="input-icon-group">
+                    <i class="fa-solid fa-calendar-alt"></i>
+                    <input type="date" id="tanggalLahir" class="form-control" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="jenisKelamin">Jenis Kelamin*</label>
+                <select id="jenisKelamin" class="select-control" required>
+                    <option value="">Pilih Jenis Kelamin</option>
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="noHP">No HP</label>
+                <div class="input-icon-group">
+                    <i class="fa-solid fa-phone"></i>
+                    <input type="tel" id="noHP" class="form-control" placeholder="08XXXXXXXXXX" pattern="[0-9]{9,15}">
+                </div>
+                <span class="input-hint">Mulai dari 08xxxxxxxxx (opsional)</span>
+            </div>
+        </div>
+        
+        <div class="form-step" id="step2">
+            <div class="form-group">
+                <label for="namaPelatih">Nama Pelatih*</label>
+                <div class="input-icon-group">
+                    <i class="fa-solid fa-user-tie"></i>
+                    <input type="text" id="namaPelatih" class="form-control" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="lokasiLatihan">Lokasi Latihan (Nama Unit/Ranting)*</label>
+                <div class="input-icon-group">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <input type="text" id="lokasiLatihan" class="form-control" placeholder="Contoh: Pondok Pesantren Al-Hidayah" required>
+                </div>
+                <span class="input-hint">Nama unit atau tempat latihan Anda berada.</span>
+            </div>
+
+            <div class="form-group">
+                <label for="provinsi">Provinsi*</label>
+                <select id="provinsi" class="select-control" required>
+                    <option value="">Pilih Provinsi</option>
+                    </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pcKotaKabupaten">PC Kota/Kabupaten*</label>
+                <select id="pcKotaKabupaten" class="select-control" required disabled>
+                    <option value="">Pilih Provinsi terlebih dahulu</option>
+                </select>
+                <span class="input-hint">Pilih PC (Pimpinan Cabang) sesuai lokasi latihan Anda.</span>
+            </div>
+            
+            <div class="form-group">
+                <label for="kelurahan">Kelurahan/Desa</label>
+                <div class="input-icon-group">
+                    <i class="fa-solid fa-map-pin"></i>
+                    <input type="text" id="kelurahan" class="form-control" placeholder="Nama Kelurahan/Desa">
+                </div>
+                <span class="input-hint">Nama Kelurahan/Desa lokasi latihan (opsional)</span>
+            </div>
+
+            <div class="radio-group">
+                <label>Apakah anda pengurus?*</label>
+                <div class="radio-item">
+                    <input type="radio" id="bukanPengurus" name="isPengurus" value="no" required>
+                    <label for="bukanPengurus">Bukan Pengurus</label>
+                </div>
+                <div class="radio-item">
+                    <input type="radio" id="yaPengurus" name="isPengurus" value="yes" required>
+                    <label for="yaPengurus">Ya, Saya Pengurus</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-step" id="step3">
+            <div class="checkbox-group">
+                <p style="font-weight: 600; margin-bottom: 15px; color: var(--primary-color);">Jenis Institusi Terkait (Wajib pilih salah satu)*</p>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="pedepokan" name="instansiType" value="pedepokan">
+                    <label for="pedepokan">Pedepokan/Padepokan</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="pesantren" name="instansiType" value="pesantren">
+                    <label for="pesantren">Pesantren (Pondok Pesantren)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="sekolah" name="instansiType" value="sekolah">
+                    <label for="sekolah">Sekolah/Kampus (Sekolah, Madrasah, Universitas)</label>
+                </div>
+            </div>
+            
+            <hr style="margin: 25px 0; border-color: var(--border-color);">
+            
+            <div class="form-group">
+                <label for="namaPerguruan">Nama Perguruan/Unit</label>
+                <div class="input-icon-group">
+                    <i class="fa-solid fa-user-group"></i>
+                    <input type="text" id="namaPerguruan" class="form-control" placeholder="Contoh: PSNU Pagar Nusa Ranting X">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="namaInstansi">Nama Pengurus/Pedepokan/Sekolah</label>
+                <div class="input-icon-group">
+                    <i class="fa-solid fa-building"></i>
+                    <input type="text" id="namaInstansi" class="form-control" placeholder="Nama Pengurusan/Institusi formal">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="teleponInstansi">Telepon Perguruan/Pedepokan</label>
+                <div class="input-icon-group">
+                    <i class="fa-solid fa-phone-volume"></i>
+                    <input type="tel" id="teleponInstansi" class="form-control" placeholder="Nomor kontak institusi">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="alamatInstansi">Alamat Perguruan/Pedepokan</label>
+                <div class="input-icon-group">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <input type="text" id="alamatInstansi" class="form-control" placeholder="Alamat lengkap institusi">
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-step" id="step4">
+            <div class="file-upload-container" onclick="document.getElementById('fotoDiri').click()">
+                <label for="fotoDiri">Pas Foto Formal*</label>
+                <i class="fa-solid fa-camera fa-2x"></i>
+                <input type="file" id="fotoDiri" class="file-input" accept="image/jpeg, image/png" required>
+                <span id="fotoDiriName" class="file-name-display">Pilih file...</span>
+                <span class="input-hint">Maksimal ukuran file 2MB, format .jpg/.png. Gunakan **foto formal** terbaik Anda.</span>
+            </div>
+            
+            <div class="file-upload-container" onclick="document.getElementById('fotoKTP').click()">
+                <label for="fotoKTP">Foto KTP*</label>
+                <i class="fa-solid fa-address-card fa-2x"></i>
+                <input type="file" id="fotoKTP" class="file-input" accept="image/jpeg, image/png" required>
+                <span id="fotoKTPName" class="file-name-display">Pilih file...</span>
+                <span class="input-hint">Maksimal ukuran file 2MB, format .jpg/.png. Pastikan foto **terbaca jelas** dan tidak buram.</span>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button type="button" class="btn btn-secondary" id="backBtn" style="display:none;">&larr; Kembali</button>
+            <button type="button" class="btn btn-primary" id="nextBtn">Berikutnya &rarr;</button>
+            <button type="submit" class="btn btn-primary" id="submitBtn" style="display:none;">Simpan Pendaftaran</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const form = document.getElementById('registrationForm');
+    const steps = document.querySelectorAll('.form-step');
+    const stepIndicators = document.querySelectorAll('.step');
+    const stepIndicatorContainer = document.querySelector('.step-indicator');
+    const backBtn = document.getElementById('backBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    let currentStep = 1;
+
+    // Mapping ikon untuk Step Indicator
+    const stepIcons = [
+        '<i class="fa-solid fa-user"></i>',
+        '<i class="fa-solid fa-graduation-cap"></i>',
+        '<i class="fa-solid fa-building"></i>',
+        '<i class="fa-solid fa-upload"></i>'
+    ];
+
+    // --- Data Kabupaten/Kota Anda (Dipotong agar tidak terlalu panjang, tapi logika JS menggunakan data lengkap Anda) ---
+    const dataWilayah = {
+        "Aceh": ["Aceh Barat", "Aceh Barat Daya", "Aceh Besar", "Aceh Jaya", "Aceh Selatan", "Aceh Singkil", "Aceh Tamiang", "Aceh Tengah", "Aceh Tenggara", "Aceh Timur", "Aceh Utara", "Bener Meriah", "Bireuen", "Gayo Lues", "Nagan Raya", "Pidie", "Pidie Jaya", "Simeulue", "Banda Aceh", "Langsa", "Lhokseumawe", "Sabang", "Subulussalam"],
+        "Sumatera Utara": ["Asahan", "Batu Bara", "Dairi", "Deli Serdang", "Humbang Hasundutan", "Karo", "Labuhanbatu", "Labuhanbatu Selatan", "Labuhanbatu Utara", "Langkat", "Mandailing Natal", "Nias", "Nias Barat", "Nias Selatan", "Nias Utara", "Padang Lawas", "Padang Lawas Utara", "Pakpak Bharat", "Samosir", "Serdang Bedagai", "Simalungun", "Tapanuli Selatan", "Tapanuli Tengah", "Tapanuli Utara", "Toba", "Medan", "Pematangsiantar", "Sibolga", "Tanjungbalai", "Tebing Tinggi", "Binjai", "Gunungsitoli"],
+        "Sumatera Barat": ["Agam", "Dharmasraya", "Kepulauan Mentawai", "Lima Puluh Kota", "Padang Pariaman", "Pasaman", "Pasaman Barat", "Pesisir Selatan", "Sijunjung", "Solok", "Solok Selatan", "Tanah Datar", "Padang", "Bukittinggi", "Payakumbuh", "Sawah Lunto"],
+        "Riau": ["Bengkalis", "Indragiri Hilir", "Indragiri Hulu", "Kampar", "Kuantan Singingi", "Pelalawan", "Rokan Hulu", "Rokan Hilir", "Siak", "Kepulauan Meranti", "Pekanbaru", "Dumai"],
+        "Kepulauan Riau": ["Bintan", "Karimun", "Lingga", "Natuna", "Kepulauan Anambas", "Batam", "Tanjungpinang"],
+        "Jambi": ["Batanghari", "Bungo", "Kerinci", "Merangin", "Muaro Jambi", "Sarolangun", "Tanjung Jabung Barat", "Tanjung Jabung Timur", "Tebo", "Jambi", "Sungai Penuh"],
+        "Sumatera Selatan": ["Banyuasin", "Empat Lawan", "Lahat", "Muara Enim", "Musi Banyuasin", "Musi Rawas", "Musi Rawas Utara", "Ogan Ilir", "Ogan Komering Ilir", "Ogan Komering Ulu", "Ogan Komering Ulu Selatan", "Ogan Komering Ulu Timur", "Penukal Abab Lematang Ilir", "Palembang", "Lubuklinggau", "Pagar Alam", "Prabumulih"],
+        "Bangka Belitung": ["Bangka", "Bangka Barat", "Bangka Selatan", "Bangka Tengah", "Belitung", "Belitung Timur", "Pangkal Pinang"],
+        "Bengkulu": ["Bengkulu Selatan", "Bengkulu Tengah", "Bengkulu Utara", "Kaur", "Kepahiang", "Lebong", "Mukomuko", "Rejang Lebong", "Seluma", "Bengkulu"],
+        "Lampung": ["Lampung Barat", "Lampung Selatan", "Lampung Tengah", "Lampung Timur", "Lampung Utara", "Mesuji", "Pesawaran", "Pesisir Barat", "Pringsewu", "Tanggamus", "Tulang Bawang", "Tulang Bawang Barat", "Way Kanan", "Bandar Lampung", "Metro"],
+        "DKI Jakarta": ["Kepulauan Seribu", "Jakarta Pusat", "Jakarta Utara", "Jakarta Barat", "Jakarta Selatan", "Jakarta Timur"],
+        "Jawa Barat": ["Bandung", "Bandung Barat", "Bekasi", "Bogor", "Ciamis", "Cianjur", "Cirebon", "Garut", "Indramayu", "Karawang", "Kuningan", "Majalengka", "Pangandaran", "Purwakarta", "Subang", "Sukabumi", "Sumedang", "Tasikmalaya", "Bandung", "Cimahi", "Depok", "Bekasi", "Bogor", "Cirebon", "Sukabumi", "Tasikmalaya"],
+        "Jawa Tengah": ["Banjarnegara", "Banyumas", "Batang", "Blora", "Boyolali", "Brebes", "Cilacap", "Demak", "Grobogan", "Jepara", "Karanganyar", "Kebumen", "Kendal", "Klaten", "Kudus", "Magelang", "Pati", "Pekalongan", "Pemalang", "Purbalingga", "Purworejo", "Rembang", "Semarang", "Sragen", "Sukoharjo", "Tegal", "Temanggung", "Wonogiri", "Wonosobo", "Semarang", "Salatiga", "Surakarta", "Tegal"],
+        "DI Yogyakarta": ["Bantul", "Gunungkidul", "Kulon Progo", "Sleman", "Yogyakarta"],
+        "Jawa Timur": ["Bangkalan", "Banyuwangi", "Blitar", "Bojonegoro", "Bondowoso", "Gresik", "Jember", "Jombang", "Kediri", "Lamongan", "Lumajang", "Magetan", "Malang", "Mojokerto", "Nganjuk", "Ngawi", "Pacitan", "Pamekasan", "Pasuruan", "Ponorogo", "Probolinggo", "Sampang", "Sidoarjo", "Situbondo", "Sumenep", "Trenggalek", "Tuban", "Tulungagung", "Surabaya", "Malang", "Blitar", "Kediri", "Madiun", "Mojokerto", "Pasuruan", "Probolinggo"],
+        "Banten": ["Lebak", "Pandeglang", "Serang", "Tangerang", "Serang", "Tangerang", "Cilegon", "Tangerang Selatan"],
+        "Bali": ["Badung", "Bangli", "Buleleng", "Gianyar", "Jembrana", "Karangasem", "Klungkung", "Tabanan", "Denpasar"],
+        "Nusa Tenggara Barat": ["Bima", "Dompu", "Lombok Barat", "Lombok Tengah", "Lombok Timur", "Lombok Utara", "Sumbawa", "Sumbawa Barat", "Mataram", "Bima"],
+        "Nusa Tenggara Timur": ["Alor", "Belu", "Ende", "Flores Timur", "Kupang", "Lembata", "Malaka", "Manggarai", "Manggarai Barat", "Manggarai Timur", "Nagekeo", "Ngada", "Rote Ndao", "Sabu Raijua", "Sikka", "Sumba Barat", "Sumba Barat Daya", "Sumba Tengah", "Sumba Timur", "Timor Tengah Selatan", "Timor Tengah Utara", "Kupang"],
+        "Kalimantan Barat": ["Bengkayang", "Kapuas Hulu", "Kayong Utara", "Ketapang", "Kubu Raya", "Landak", "Mempawah", "Sambas", "Sanggau", "Sekadau", "Sintang", "Pontianak", "Singkawang"],
+        "Kalimantan Tengah": ["Barito Selatan", "Barito Timur", "Barito Utara", "Gunung Mas", "Kapuas", "Katingan", "Kotawaringin Barat", "Kotawaringin Timur", "Lamandau", "Murung Raya", "Pulang Pisau", "Seruyan", "Sukamara", "Palangkaraya"],
+        "Kalimantan Selatan": ["Balangan", "Banjar", "Barito Kuala", "Hulu Sungai Selatan", "Hulu Sungai Tengah", "Hulu Sungai Utara", "Kotabaru", "Tabalong", "Tanah Bumbu", "Tanah Laut", "Tapin", "Banjarmasin", "Banjarbaru"],
+        "Kalimantan Timur": ["Berau", "Kutai Barat", "Kutai Kartanegara", "Kutai Timur", "Mahakam Ulu", "Paser", "Penajam Paser Utara", "Samarinda", "Balikpapan", "Bontang"],
+        "Kalimantan Utara": ["Bulungan", "Malinau", "Nunukan", "Tana Tidung", "Tarakan"],
+        "Sulawesi Utara": ["Bolaang Mongondow", "Bolaang Mongondow Selatan", "Bolaang Mongondow Timur", "Bolaang Mongondow Utara", "Kepulauan Sangihe", "Kepulauan Siau Tagulandang Biaro", "Kepulauan Talaud", "Minahasa", "Minahasa Selatan", "Minahasa Tenggara", "Minahasa Utara", "Manado", "Bitung", "Kotamobagu", "Tomohon"],
+        "Gorontalo": ["Boalemo", "Bone Bolango", "Gorontalo", "Gorontalo Utara", "Pohuwato", "Gorontalo"],
+        "Sulawesi Tengah": ["Banggai", "Banggai Kepulauan", "Banggai Laut", "Buol", "Donggala", "Morowali", "Morowali Utara", "Parigi Moutong", "Poso", "Sigi", "Tojo Una-Una", "Tolitoli", "Palu"],
+        "Sulawesi Barat": ["Majene", "Mamasa", "Mamuju", "Mamuju Tengah", "Pasangkayu", "Polewali Mandar"],
+        "Sulawesi Selatan": ["Bantaeng", "Barru", "Bone", "Bulukumba", "Enrekang", "Gowa", "Jeneponto", "Kepulauan Selayar", "Luwu", "Luwu Timur", "Luwu Utara", "Maros", "Pangkajene dan Kepulauan", "Pinrang", "Sidenreng Rappang", "Sinjai", "Soppeng", "Takalar", "Tana Toraja", "Toraja Utara", "Wajo", "Makassar", "Palopo", "Parepare"],
+        "Sulawesi Tenggara": ["Bombana", "Buton", "Buton Selatan", "Buton Tengah", "Buton Utara", "Kolaka", "Kolaka Timur", "Kolaka Utara", "Konawe", "Konawe Kepulauan", "Konawe Selatan", "Konawe Utara", "Muna", "Muna Barat", "Wakatobi", "Kendari", "Baubau"],
+        "Maluku": ["Buru", "Buru Selatan", "Kepulauan Aru", "Kepulauan Tanimbar", "Maluku Barat Daya", "Maluku Tengah", "Maluku Tenggara", "Seram Bagian Barat", "Seram Bagian Timur", "Ambon", "Tual"],
+        "Maluku Utara": ["Halmahera Barat", "Halmahera Selatan", "Halmahera Tengah", "Halmahera Timur", "Halmahera Utara", "Kepulauan Sula", "Pulau Morotai", "Pulau Taliabu", "Ternate", "Tidore Kepulauan"],
+        "Papua Barat": ["Fakfak", "Kaimana", "Manokwari", "Manokwari Selatan", "Pegunungan Arfak", "Raja Ampat", "Sorong", "Sorong Selatan", "Tambrauw", "Teluk Bintuni", "Teluk Wondama", "Maybrat", "Sorong"],
+        "Papua Barat Daya": ["Raja Ampat", "Sorong", "Sorong Selatan", "Tambrauw", "Maybrat"],
+        "Papua": ["Asmat", "Biak Numfor", "Boven Digoel", "Deiyai", "Dogiyai", "Intan Jaya", "Jayapura", "Jayawijaya", "Keerom", "Kepulauan Yapen", "Lanny Jaya", "Mamberamo Raya", "Mamberamo Tengah", "Mappi", "Merauke", "Mimika", "Nabire", "Nduga", "Paniai", "Pegunungan Bintang", "Puncak", "Puncak Jaya", "Sarmi", "Supiori", "Tolikara", "Waropen", "Yahukimo", "Yalimo", "Jayapura"],
+        "Papua Tengah": ["Dogiyai", "Intan Jaya", "Mimika", "Nabire", "Paniai", "Puncak", "Puncak Jaya", "Deiyai"],
+        "Papua Pegunungan": ["Jayawijaya", "Lanny Jaya", "Mamberamo Tengah", "Nduga", "Pegunungan Bintang", "Tolikara", "Yahukimo", "Yalimo"],
+        "Papua Selatan": ["Asmat", "Boven Digoel", "Mappi", "Merauke"]
+    };
+    
+    // Gunakan dataWilayah yang lengkap dari berkas asli yang Anda berikan
+    // Karena keterbatasan karakter, saya hanya menampilkan beberapa di sini.
+    // Asumsi: dataWilayah di JS final adalah data lengkap yang Anda berikan.
+
+
+    const provinsiSelect = document.getElementById('provinsi');
+    const pcKotaKabupatenSelect = document.getElementById('pcKotaKabupaten');
+    const checkboxGroup = document.querySelector('.checkbox-group');
+
+
+    // --- Fungsionalitas Step Indicator & Navigasi ---
+    function initProvinsiOptions() {
+        const sortedProvinces = Object.keys(dataWilayah).sort();
+        sortedProvinces.forEach(provinsi => {
+            const option = document.createElement('option');
+            option.value = provinsi;
+            option.textContent = provinsi;
+            provinsiSelect.appendChild(option);
+        });
+    }
+
+    function showStep(stepIndex) {
+        steps.forEach(step => step.classList.remove('active'));
+        document.getElementById(`step${stepIndex}`).classList.add('active');
+        
+        const totalSteps = steps.length;
+        const progressWidth = ((stepIndex - 1) / (totalSteps - 1)) * 100;
+        stepIndicatorContainer.style.setProperty('--progress-width', `${progressWidth}%`);
+
+        stepIndicators.forEach((indicator, index) => {
+            indicator.classList.remove('active', 'completed');
+            const circle = indicator.querySelector('.step-circle');
+            
+            if (index + 1 < stepIndex) {
+                // Langkah Selesai
+                indicator.classList.add('completed');
+                circle.innerHTML = '<i class="fa-solid fa-check"></i>';
+            } else if (index + 1 === stepIndex) {
+                // Langkah Aktif
+                indicator.classList.add('active');
+                circle.innerHTML = stepIcons[index];
+            } else {
+                // Langkah Belum Dikunjungi
+                circle.innerHTML = stepIcons[index];
+            }
+        });
+        
+        backBtn.style.display = (stepIndex === 1) ? 'none' : 'block';
+        nextBtn.style.display = (stepIndex === totalSteps) ? 'none' : 'block';
+        submitBtn.style.display = (stepIndex === totalSteps) ? 'block' : 'none';
+        
+        currentStep = stepIndex;
+        document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // --- Fungsionalitas Validasi Per Langkah ---
+    function validateStep(stepIndex) {
+        const currentStepElement = document.getElementById(`step${stepIndex}`);
+        const requiredInputs = currentStepElement.querySelectorAll('[required]');
+        let isValid = true;
+        let firstInvalidInput = null;
+
+        // Reset error styling
+        currentStepElement.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+        checkboxGroup.classList.remove('error-border');
+        currentStepElement.querySelectorAll('.file-upload-container').forEach(el => el.classList.remove('error-border'));
+        currentStepElement.querySelectorAll('.radio-group').forEach(el => el.classList.remove('error-border'));
+
+        requiredInputs.forEach(input => {
+            let isFieldValid = true;
+
+            if (input.type === 'file' && input.files.length === 0) {
+                isFieldValid = false;
+                input.closest('.file-upload-container').classList.add('error-border');
+            } else if (input.tagName === 'SELECT' && input.value === "") {
+                 isFieldValid = false;
+            } else if (!input.value.trim()) {
+                isFieldValid = false;
+            } else if (input.type === 'text' && input.hasAttribute('pattern')) {
+                 const regex = new RegExp(input.getAttribute('pattern'));
+                 if (input.id === 'nik' && !regex.test(input.value.trim())) {
+                     isFieldValid = false;
+                 }
+            } else if (input.type === 'radio' && input.name && !document.querySelector(`input[name="${input.name}"]:checked`)) {
+                 isFieldValid = false;
+                 input.closest('.radio-group').classList.add('error-border');
+            }
+
+            if (!isFieldValid) {
+                isValid = false;
+                if (!firstInvalidInput) {
+                    firstInvalidInput = input;
+                }
+                // Hanya tambahkan class error pada input yang tidak valid (bukan file input)
+                if (input.type !== 'file' && input.type !== 'radio') {
+                    input.classList.add('input-error');
+                }
+            }
+        });
+
+        // Validasi khusus Step 3: Wajib pilih salah satu checkbox
+        if (stepIndex === 3) {
+            const checkboxes = document.querySelectorAll('#step3 input[name="instansiType"]');
+            const oneChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+            if (!oneChecked) {
+                 isValid = false;
+                 checkboxGroup.classList.add('error-border');
+                 if (!firstInvalidInput) { firstInvalidInput = checkboxes[0]; }
+            }
+        }
+
+        if (!isValid) {
+            alert('Mohon lengkapi semua field yang wajib diisi (*) dan periksa format input yang salah.');
+            if (firstInvalidInput && firstInvalidInput.type !== 'radio' && firstInvalidInput.type !== 'checkbox') {
+                 firstInvalidInput.focus();
+            }
+        }
+        return isValid;
+    }
+
+    // --- Fungsionalitas Dropdown Wilayah ---
+    function populateKabupatenKota() {
+        const selectedProvinsi = provinsiSelect.value;
+        
+        pcKotaKabupatenSelect.innerHTML = '<option value="">Pilih Kota/Kabupaten</option>';
+        pcKotaKabupatenSelect.disabled = true;
+        pcKotaKabupatenSelect.classList.remove('input-error');
+        
+        if (selectedProvinsi && dataWilayah[selectedProvinsi]) {
+            dataWilayah[selectedProvinsi].sort().forEach(kabupaten => {
+                const option = document.createElement('option');
+                option.value = kabupaten;
+                option.textContent = kabupaten;
+                pcKotaKabupatenSelect.appendChild(option);
+            });
+            pcKotaKabupatenSelect.disabled = false;
+            // Fokus otomatis hanya pada perubahan pertama
+            if (pcKotaKabupatenSelect.options.length > 1) {
+                // pcKotaKabupatenSelect.focus(); 
+            }
+        } else {
+            pcKotaKabupatenSelect.innerHTML = '<option value="">Pilih Provinsi terlebih dahulu</option>';
+        }
+    }
+    
+    // --- Fungsionalitas File Input Display ---
+    function setupFileInputDisplay(inputId, displayId) {
+        const fileInput = document.getElementById(inputId);
+        const fileNameDisplay = document.getElementById(displayId);
+        
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                fileNameDisplay.textContent = fileInput.files[0].name;
+                // Bersihkan error border setelah memilih file
+                fileInput.closest('.file-upload-container').classList.remove('error-border');
+            } else {
+                fileNameDisplay.textContent = 'Pilih file...';
+            }
+        });
+    }
+
+    // --- Event Listeners ---
+    document.addEventListener('DOMContentLoaded', () => {
+        initProvinsiOptions();
+        setupFileInputDisplay('fotoDiri', 'fotoDiriName');
+        setupFileInputDisplay('fotoKTP', 'fotoKTPName');
+        showStep(1);
+    });
+
+    provinsiSelect.addEventListener('change', populateKabupatenKota);
+
+    nextBtn.addEventListener('click', () => {
+        if (validateStep(currentStep)) {
+            if (currentStep < steps.length) {
+                showStep(currentStep + 1);
+            }
+        }
+    });
+
+    backBtn.addEventListener('click', () => {
+        if (currentStep > 1) {
+            showStep(currentStep - 1);
+        }
+    });
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (validateStep(currentStep)) {
+            // Logika pengiriman data ke server Anda di sini (menggunakan Fetch API/AJAX)
+            alert('Formulir Pendaftaran Berhasil Disimpan! Data akan dikirimkan untuk diverifikasi.'); 
+            
+            // Contoh pengiriman data (Anda bisa kembangkan ini)
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            
+            console.log('Data yang akan dikirim:', data);
+            
+            // form.reset();
+            // showStep(1); 
+        }
+    });
+
+    // Mengaktifkan klik pada step yang sudah selesai (untuk kembali)
+    stepIndicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', (e) => {
+            const targetStep = parseInt(indicator.getAttribute('data-step'));
+            // Izinkan klik hanya untuk kembali ke langkah sebelumnya atau langkah aktif
+            if (targetStep <= currentStep) {
+                 showStep(targetStep);
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
