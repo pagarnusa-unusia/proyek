@@ -3,346 +3,370 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Anggota</title>
+    <title>Sign in - Salam Pagar Nusa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
     <style>
-        /* Gaya CSS dari versi sebelumnya */
+        /* CSS Styling */
         :root {
-            --primary-color: #0b7f43; /* Hijau Pagar Nusa */
-            --secondary-color: #1f2937; /* Biru gelap untuk teks/latar */
-            --light-bg: #f3f4f6;
-            --text-dark: #374151;
+            --primary-color: #6366f1;
+            --dark-bg: #1f2937;
             --text-light: #f3f4f6;
-            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --text-dark: #374151;
+            --error-color: #ef4444; 
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: var(--font-family);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: var(--light-bg);
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            background-color: #ffffff;
         }
 
-        .profile-container {
+        .container {
+            display: flex;
             width: 100%;
-            max-width: 800px;
-            background: white;
-            border-radius: 16px;
-            box-shadow: var(--card-shadow);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            height: 100%;
         }
 
-        .profile-header {
-            background-color: var(--secondary-color);
-            color: var(--text-light);
-            padding: 20px 40px;
+        /* --- Sisi Kiri: Formulir Sign In --- */
+        .left-panel {
+            flex: 1;
             display: flex;
+            justify-content: center;
             align-items: center;
-            justify-content: space-between;
-        }
-        
-        .profile-header h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .back-link {
-            color: var(--text-light);
-            text-decoration: none;
-            font-size: 0.9rem;
-            opacity: 0.8;
-            transition: opacity 0.3s;
-        }
-        
-        .back-link:hover {
-            opacity: 1;
-        }
-
-        .profile-content {
             padding: 40px;
-            display: flex;
-            gap: 40px;
-            align-items: flex-start;
         }
 
-        .profile-photo-area {
-            flex-shrink: 0;
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+            text-align: left;
+        }
+
+        .logo {
+            margin-bottom: 20px;
             text-align: center;
         }
 
-        .profile-photo {
-            width: 150px;
-            height: 200px;
-            background-color: var(--light-bg);
-            border-radius: 8px;
-            object-fit: cover;
-            border: 4px solid var(--primary-color);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        .logo img {
+            /* Pastikan jalur ini benar untuk GitHub Pages */
+            width: 80px;
+            height: auto;
         }
 
-        .edit-photo-btn {
-            display: block;
-            margin-top: 15px;
-            padding: 8px 15px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: background-color 0.3s;
-        }
-
-        .edit-photo-btn:hover {
-            background-color: #086b36;
-        }
-
-        .member-details {
-            flex-grow: 1;
-        }
-
-        .member-details h2 {
+        h1.signin-title {
             font-size: 2.5rem;
+            font-weight: bold;
             color: var(--text-dark);
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--light-bg);
-            padding-bottom: 10px;
-            font-weight: 800;
+            margin-bottom: 5px;
+            text-align: center;
         }
 
-        .detail-item {
+        .register-link {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+        }
+
+        .register-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .password-input-group {
+            position: relative;
             display: flex;
             align-items: center;
-            margin-bottom: 15px;
-            padding: 10px 0;
-            border-bottom: 1px dashed #e5e7eb;
-        }
-        
-        .detail-item:last-child {
-            border-bottom: none;
         }
 
-        .detail-item i {
-            color: var(--primary-color);
-            font-size: 1.2rem;
-            width: 30px;
-            text-align: center;
-        }
-
-        .detail-info {
-            margin-left: 15px;
-        }
-
-        .detail-label {
-            display: block;
-            font-size: 0.85rem;
-            color: #6b7280;
-            font-weight: 500;
-        }
-
-        .detail-value {
-            font-size: 1rem;
-            color: var(--text-dark);
-            font-weight: 600;
-        }
-        
-        .action-buttons {
-            margin-top: 30px;
-            display: flex;
-            gap: 15px;
-            padding-top: 20px;
-            border-top: 1px solid var(--light-bg);
-        }
-
-        .btn {
-            padding: 12px 25px;
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #d1d5db;
             border-radius: 8px;
-            font-weight: 600;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .password-input-group .form-control {
+            padding-right: 40px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+        
+        .form-control.error {
+            border-color: var(--error-color);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .btn-signin {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
             cursor: pointer;
             transition: background-color 0.3s;
         }
 
-        .btn-edit {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
+        .btn-signin:hover {
+            background-color: #4f46e5;
+        }
+        
+        /* Hapus CSS spinner karena fungsi setTimeout telah dihapus */
+        .spinner, .btn-signin.loading .btn-text { display: none; }
+        .btn-signin.loading { pointer-events: none; }
+
+
+        /* --- Sisi Kanan: Hero Section (Tidak Berubah) --- */
+        .right-panel {
+            flex: 1;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: left;
+            padding: 40px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 1600 800'%3E%3Cg stroke='%23374151' stroke-width='60' %3E%3Cpath fill='%231f2937' d='M-100 200C-100 134 -46 80 20 80S160 134 160 200S106 320 40 320S-100 266 -100 200z' /%3E%3Cpath fill='%231f2937' d='M1500 600C1500 534 1446 480 1380 480S1240 534 1240 600S1294 720 1360 720S1500 666 1500 600z' /%3E%3C/g%3E%3Cg stroke='%23374151' stroke-width='40' %3E%3Cpath fill='%231f2937' d='M1100 -200C1100 -266 1046 -320 980 -320S840 -266 840 -200S894 -80 960 -80S1100 -134 1100 -200z' /%3E%3Cpath fill='%231f2937' d='M500 1000C500 934 446 880 380 880S240 934 240 1000S294 1120 360 1120S500 1066 500 1000z' /%3E%3C/g%3E%3C/svg%3E");
+            background-size: cover;
+            background-position: center;
         }
 
-        .btn-edit:hover {
-            background-color: #086b36;
+        .welcome-content {
+            max-width: 500px;
         }
 
-        .btn-logout {
-            background-color: #fca5a5;
-            color: var(--text-dark);
-            border: 1px solid #ef4444;
+        h2.welcome-title {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
         }
 
-        .btn-logout:hover {
-            background-color: #f87171;
-            color: white;
+        p.platform-desc {
+            font-size: 1.25rem;
+            color: #9ca3af;
         }
 
         /* Responsiveness */
-        @media (max-width: 600px) {
-            .profile-content {
+        @media (max-width: 768px) {
+            .container {
                 flex-direction: column;
-                align-items: center;
-                padding: 25px;
-                text-align: center;
-                gap: 20px;
             }
 
-            .profile-header {
-                padding: 15px 20px;
+            .right-panel {
+                display: none;
             }
 
-            .member-details h2 {
+            .left-panel {
+                min-height: 100vh;
+            }
+
+            h1.signin-title {
                 font-size: 2rem;
-                text-align: center;
-            }
-
-            .detail-item {
-                justify-content: center;
-            }
-            
-            .detail-info {
-                text-align: left;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-                width: 100%;
-            }
-            
-            .action-buttons .btn {
-                width: 100%;
             }
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="login-box">
+                <div class="logo">
+                    <img src="./logopn.png" alt="Logo Pagar Nusa">
+                </div>
+                
+                <h1 class="signin-title">Selamat Datang</h1>
+                
+                <div class="register-link">
+                    Belum punya akun? <a href="./register.html">**Daftar Sekarang**</a>
+                </div>
 
-<div class="profile-container">
-    
-    <div class="profile-header">
-        <h1>Profil Anggota Pagar Nusa</h1>
-        <a href="../salampagarnusa.html" class="back-link" onclick="logout(event, true)"><i class="fa-solid fa-sign-out"></i> Keluar</a>
-    </div>
+                <form id="signInForm">
+                    <div class="form-group">
+                        <label for="memberId">Nomor Induk Anggota*</label>
+                        <input type="text" id="memberId" name="memberId" class="form-control" placeholder="Masukkan NIA/ID Anda" required>
+                        <span class="error-message" data-for="memberId">NIA wajib diisi.</span>
+                    </div>
 
-    <div class="profile-content">
-        <div class="profile-photo-area">
-            <img src="" alt="Foto Profil Anggota" class="profile-photo">
-            <button class="edit-photo-btn" onclick="alert('Arahkan ke fitur ubah foto')">
-                 <i class="fa-solid fa-camera"></i> Ubah Foto
-            </button>
+                    <div class="form-group">
+                        <label for="password">Kata Sandi*</label>
+                        <div class="password-input-group">
+                            <input type="password" id="password" name="password" class="form-control" placeholder="Masukkan Kata Sandi" required>
+                            <i class="fas fa-eye password-toggle" onclick="togglePassword()"></i>
+                        </div>
+                        <span class="error-message" data-for="password">Kata Sandi wajib diisi.</span>
+                    </div>
+                    
+                    <div style="text-align: right; margin-bottom: 25px;">
+                        <a href="#" style="color: var(--primary-color); font-size: 0.85rem; text-decoration: none;">Lupa Kata Sandi?</a>
+                    </div>
+
+                    <button type="submit" class="btn-signin" id="submitBtn">
+                        <span class="btn-text">Sign in</span>
+                        </button>
+                </form>
+            </div>
         </div>
-        
-        <div class="member-details">
-            <h2 id="memberName">Nama Anggota</h2>
-            
-            <div class="detail-item">
-                <i class="fa-solid fa-id-card"></i>
-                <div class="detail-info">
-                    <span class="detail-label">Nomor Induk Anggota (NIA)</span>
-                    <span class="detail-value" id="memberNIA">Memuat...</span>
-                </div>
-            </div>
-            
-            <div class="detail-item">
-                <i class="fa-solid fa-location-dot"></i>
-                <div class="detail-info">
-                    <span class="detail-label">Domisili (PC/Pimpinan Cabang)</span>
-                    <span class="detail-value" id="memberDomisili">Memuat...</span>
-                </div>
-            </div>
 
-            <div class="detail-item">
-                <i class="fa-solid fa-calendar-alt"></i>
-                <div class="detail-info">
-                    <span class="detail-label">Status Keanggotaan</span>
-                    <span class="detail-value" id="memberStatus">Memuat...</span>
-                </div>
-            </div>
-            
-            <div class="action-buttons">
-                <button class="btn btn-edit" onclick="alert('Arahkan ke halaman edit data')">
-                    <i class="fa-solid fa-pen-to-square"></i> Edit Data Diri
-                </button>
-                <button class="btn btn-logout" onclick="logout()">
-                    <i class="fa-solid fa-right-from-bracket"></i> Log Out
-                </button>
+        <div class="right-panel">
+            <div class="welcome-content">
+                <h2 class="welcome-title">SELAMAT DATANG<br>PAGARNUSA UNUSIA</h2>
+                <p class="platform-desc">Platform digital terpadu untuk administrasi anggota Pagar Nusa Universitas Nahdlatul Ulama Indonesia (UNUSIA).</p>
             </div>
         </div>
     </div>
-</div>
-
-<script>
-    // Fungsi untuk menghapus data sesi dan redirect ke halaman login
-    function logout(e, confirmRequired = false) {
-        if (e) e.preventDefault();
-        
-        if (confirmRequired && !confirm('Anda yakin ingin keluar?')) {
-            return;
-        }
-        
-        // Hapus data pengguna yang tersimpan di sesi (Local Storage)
-        localStorage.removeItem('loggedInUser');
-        
-        // PERBAIKAN 2: Menggunakan "../" untuk kembali ke direktori induk
-        window.location.href = '../salampagarnusa.html'; 
-    }
     
-    // Fungsi untuk memuat data dari LocalStorage saat halaman dimuat
-    function loadProfileData() {
-        // Ambil data profil dari LocalStorage
-        const userDataString = localStorage.getItem('loggedInUser');
-        
-        // Cek jika data ada
-        if (!userDataString) {
-            alert('Sesi berakhir atau data tidak ditemukan. Silakan login kembali.');
-            // PERBAIKAN 3: Menggunakan "../" untuk kembali ke direktori induk saat sesi tidak ditemukan
-            window.location.href = '../salampagarnusa.html'; 
-            return;
+    <script>
+        const signInForm = document.getElementById('signInForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const memberIdInput = document.getElementById('memberId');
+        const passwordInput = document.getElementById('password');
+
+        // *** SIMULASI DATABASE AKUN DAN DATA PROFIL (Jalur Lokal Diperbaiki) ***
+        const USER_DB = {
+            '7602010603040006': {
+                password: '123',
+                profile: {
+                    name: 'MUHAMMAD IBNU MUNDZIR',
+                    nia: '86300408000001', 
+                    domicile: 'Kabupaten Mamuju Tengah',
+                    status: 'Aktif (Sejak 2022)',
+                    // Jalur relatif: Kembali ke root (..), masuk ke folder 'foto-anggota'
+                    photoUrl: '../foto-anggota/Muhammad Ibnu Mundzir.jpg' 
+                }
+            },
+            '9876543210987654': { 
+                password: 'anggota2',
+                profile: {
+                    name: 'DEDE AHMAD FAUZAN',
+                    nia: '9876543210987654',
+                    domicile: 'Kota Garut',
+                    status: 'Aktif (Sejak 2023)',
+                    photoUrl: '../foto-anggota/Dede Ahmad Fauzan.jpg'
+                }
+            }
+        };
+
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const toggleIcon = document.querySelector('.password-toggle');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
         }
 
-        const userData = JSON.parse(userDataString);
-
-        // Isi elemen HTML dengan data yang diambil
-        document.getElementById('memberName').textContent = userData.name;
-        document.getElementById('memberNIA').textContent = userData.nia;
-        document.getElementById('memberDomisili').textContent = userData.domicile;
-        document.getElementById('memberStatus').textContent = userData.status;
-        
-        // Ganti judul halaman
-        document.title = `Profil Anggota - ${userData.name}`;
-
-        // Ganti foto profil
-        const profilePhoto = document.querySelector('.profile-photo');
-        if (profilePhoto && userData.photoUrl) {
-            profilePhoto.src = userData.photoUrl; 
-        } else {
-             // Opsional: Tampilkan placeholder jika URL foto kosong/gagal dimuat
-             profilePhoto.src = 'https://via.placeholder.com/150x200/0b7f43/FFFFFF?text=FOTO+PN';
+        function displayError(inputElement, message) {
+            inputElement.classList.add('error');
+            const errorElement = inputElement.closest('.form-group').querySelector('.error-message');
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
         }
-    }
 
-    // Panggil fungsi saat halaman selesai dimuat
-    document.addEventListener('DOMContentLoaded', loadProfileData);
-</script>
+        function clearError(inputElement) {
+            inputElement.classList.remove('error');
+            const errorElement = inputElement.closest('.form-group').querySelector('.error-message');
+            if (errorElement) {
+                errorElement.style.display = 'none';
+            }
+        }
 
+        function validateForm() {
+            let isValid = true;
+            clearError(memberIdInput);
+            clearError(passwordInput);
+
+            if (!memberIdInput.value.trim()) {
+                displayError(memberIdInput, 'Nomor Induk Anggota wajib diisi.');
+                isValid = false;
+            }
+
+            if (!passwordInput.value.trim()) {
+                displayError(passwordInput, 'Kata Sandi wajib diisi.');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+        
+        memberIdInput.addEventListener('input', () => clearError(memberIdInput));
+        passwordInput.addEventListener('input', () => clearError(passwordInput));
+
+
+        signInForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (validateForm()) {
+                // Hapus logika loading (spinner) dan setTimeout untuk pengalihan instan
+                
+                const nia = memberIdInput.value.trim();
+                const password = passwordInput.value.trim();
+                const userData = USER_DB[nia];
+                
+                const isSuccess = userData && userData.password === password;
+
+                if (isSuccess) {
+                    alert('Sign in Berhasil! Mengarahkan ke halaman profil...');
+                    
+                    // SIMPAN DATA PROFIL KE LOCALSTORAGE
+                    localStorage.setItem('loggedInUser', JSON.stringify(userData.profile));
+                    
+                    // Pengalihan instan ke halaman profil di dalam subfolder
+                    window.location.href = './profilanggota/profilanggota.html'; 
+                } else {
+                    // Tampilkan error jika kredensial salah
+                    displayError(memberIdInput, 'NIA atau Kata Sandi salah.');
+                    displayError(passwordInput, 'NIA atau Kata Sandi salah.');
+                    alert('Sign in Gagal. NIA atau Kata Sandi salah.'); 
+                }
+            }
+        });
+    </script>
 </body>
 </html>
