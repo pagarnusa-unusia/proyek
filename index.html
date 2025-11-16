@@ -395,7 +395,7 @@
                         localStorage.setItem('loggedInUser', JSON.stringify(userData.profile));
                         
                         // ✅ PERBAIKAN 3: Pengalihan ke halaman profil di dalam subfolder
-                        window.location.href = 'profilanggota/profilanggota.html'; 
+                        window.location.href = '../profilanggota/profilanggota.html'; 
                     } else {
                         // Tampilkan error jika kredensial salah
                         displayError(memberIdInput, 'NIA atau Kata Sandi salah.');
@@ -409,4 +409,5 @@
         });
     </script>
 </body>
+
 </html>
