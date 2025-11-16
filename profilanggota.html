@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Anggota</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        /* Gaya CSS dari versi sebelumnya */
+        :root {
+            --primary-color: #0b7f43; /* Hijau Pagar Nusa */
+            --secondary-color: #1f2937; /* Biru gelap untuk teks/latar */
+            --light-bg: #f3f4f6;
+            --text-dark: #374151;
+            --text-light: #f3f4f6;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family);
+        }
+
+        body {
+            background-color: var(--light-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .profile-container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-header {
+            background-color: var(--secondary-color);
+            color: var(--text-light);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .profile-header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .back-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        .profile-content {
+            padding: 40px;
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        .profile-photo-area {
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+        .profile-photo {
+            width: 150px;
+            height: 200px;
+            background-color: var(--light-bg);
+            border-radius: 8px;
+            object-fit: cover;
+            border: 4px solid var(--primary-color);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .edit-photo-btn {
+            display: block;
+            margin-top: 15px;
+            padding: 8px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+
+        .edit-photo-btn:hover {
+            background-color: #086b36;
+        }
+
+        .member-details {
+            flex-grow: 1;
+        }
+
+        .member-details h2 {
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--light-bg);
+            padding-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px 0;
+            border-bottom: 1px dashed #e5e7eb;
+        }
+        
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-item i {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            width: 30px;
+            text-align: center;
+        }
+
+        .detail-info {
+            margin-left: 15px;
+        }
+
+        .detail-label {
+            display: block;
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .action-buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            padding-top: 20px;
+            border-top: 1px solid var(--light-bg);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-edit {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-edit:hover {
+            background-color: #086b36;
+        }
+
+        .btn-logout {
+            background-color: #fca5a5;
+            color: var(--text-dark);
+            border: 1px solid #ef4444;
+        }
+
+        .btn-logout:hover {
+            background-color: #f87171;
+            color: white;
+        }
+
+        /* Responsiveness */
+        @media (max-width: 600px) {
+            .profile-content {
+                flex-direction: column;
+                align-items: center;
+                padding: 25px;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .profile-header {
+                padding: 15px 20px;
+            }
+
+            .member-details h2 {
+                font-size: 2rem;
+                text-align: center;
+            }
+
+            .detail-item {
+                justify-content: center;
+            }
+            
+            .detail-info {
+                text-align: left;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .action-buttons .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="profile-container">
+    
+    <div class="profile-header">
+        <h1>Profil Anggota Pagar Nusa</h1>
+        <a href="../salampagarnusa.html" class="back-link" onclick="logout(event, true)"><i class="fa-solid fa-sign-out"></i> Keluar</a>
+    </div>
+
+    <div class="profile-content">
+        <div class="profile-photo-area">
+            <img src="" alt="Foto Profil Anggota" class="profile-photo">
+            <button class="edit-photo-btn" onclick="alert('Arahkan ke fitur ubah foto')">
+                 <i class="fa-solid fa-camera"></i> Ubah Foto
+            </button>
+        </div>
+        
+        <div class="member-details">
+            <h2 id="memberName">Nama Anggota</h2>
+            
+            <div class="detail-item">
+                <i class="fa-solid fa-id-card"></i>
+                <div class="detail-info">
+                    <span class="detail-label">Nomor Induk Anggota (NIA)</span>
+                    <span class="detail-value" id="memberNIA">Memuat...</span>
+                </div>
+            </div>
+            
+            <div class="detail-item">
+                <i class="fa-solid fa-location-dot"></i>
+                <div class="detail-info">
+                    <span class="detail-label">Domisili (PC/Pimpinan Cabang)</span>
+                    <span class="detail-value" id="memberDomisili">Memuat...</span>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <i class="fa-solid fa-calendar-alt"></i>
+                <div class="detail-info">
+                    <span class="detail-label">Status Keanggotaan</span>
+                    <span class="detail-value" id="memberStatus">Memuat...</span>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-edit" onclick="alert('Arahkan ke halaman edit data')">
+                    <i class="fa-solid fa-pen-to-square"></i> Edit Data Diri
+                </button>
+                <button class="btn btn-logout" onclick="logout()">
+                    <i class="fa-solid fa-right-from-bracket"></i> Log Out
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Fungsi untuk menghapus data sesi dan redirect ke halaman login
+    function logout(e, confirmRequired = false) {
+        if (e) e.preventDefault();
+        
+        if (confirmRequired && !confirm('Anda yakin ingin keluar?')) {
+            return;
+        }
+        
+        // Hapus data pengguna yang tersimpan di sesi (Local Storage)
+        localStorage.removeItem('loggedInUser');
+        
+        // PERBAIKAN 2: Menggunakan "../" untuk kembali ke direktori induk
+        window.location.href = '../salampagarnusa.html'; 
+    }
+    
+    // Fungsi untuk memuat data dari LocalStorage saat halaman dimuat
+    function loadProfileData() {
+        // Ambil data profil dari LocalStorage
+        const userDataString = localStorage.getItem('loggedInUser');
+        
+        // Cek jika data ada
+        if (!userDataString) {
+            alert('Sesi berakhir atau data tidak ditemukan. Silakan login kembali.');
+            // PERBAIKAN 3: Menggunakan "../" untuk kembali ke direktori induk saat sesi tidak ditemukan
+            window.location.href = '../salampagarnusa.html'; 
+            return;
+        }
+
+        const userData = JSON.parse(userDataString);
+
+        // Isi elemen HTML dengan data yang diambil
+        document.getElementById('memberName').textContent = userData.name;
+        document.getElementById('memberNIA').textContent = userData.nia;
+        document.getElementById('memberDomisili').textContent = userData.domicile;
+        document.getElementById('memberStatus').textContent = userData.status;
+        
+        // Ganti judul halaman
+        document.title = `Profil Anggota - ${userData.name}`;
+
+        // Ganti foto profil
+        const profilePhoto = document.querySelector('.profile-photo');
+        if (profilePhoto && userData.photoUrl) {
+            profilePhoto.src = userData.photoUrl; 
+        } else {
+             // Opsional: Tampilkan placeholder jika URL foto kosong/gagal dimuat
+             profilePhoto.src = 'https://via.placeholder.com/150x200/0b7f43/FFFFFF?text=FOTO+PN';
+        }
+    }
+
+    // Panggil fungsi saat halaman selesai dimuat
+    document.addEventListener('DOMContentLoaded', loadProfileData);
+</script>
+
+</body>
+</html>
