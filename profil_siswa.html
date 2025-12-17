@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profil Peserta | PAGARNUSA UNUSIA</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1B7548',
+                        primaryDark: '#145c38'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .status-card { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-800">
+
+    <header class="bg-primary text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <img src="logopn.png" alt="Logo" class="h-10">
+                <h1 class="text-sm font-bold uppercase tracking-wider">Profil<br>Peserta UKT</h1>
+            </div>
+            <button id="logout-btn" class="text-sm bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition font-medium">
+                <i class="fas fa-sign-out-alt mr-1"></i> Keluar
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            
+            <div class="bg-white rounded-2xl shadow-sm p-6 mb-6 border border-slate-100">
+                <div class="flex items-center space-x-4">
+                    <div class="h-16 w-16 bg-emerald-100 text-primary rounded-full flex items-center justify-center text-2xl font-bold">
+                        <span id="initials">--</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800" id="display-nama">Memuat Nama...</h2>
+                        <p class="text-sm text-slate-500" id="display-email">memuat_email@mail.com</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="md:col-span-1">
+                    <div id="status-container" class="status-card bg-white p-6 rounded-2xl shadow-sm border-t-4 border-slate-300">
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Status Verifikasi</p>
+                        <h3 id="display-status" class="text-xl font-bold italic text-slate-400">Panding⏳️</h3>
+                        <p id="status-desc" class="text-xs text-slate-500 mt-4 leading-relaxed">
+                            Data Anda sedang dalam proses peninjauan oleh admin. Mohon cek berkala.
+                        </p>
+                    </div>
+                    
+                    <a href="pembayaran.html" class="mt-4 flex items-center justify-center w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-100">
+                        <i class="fas fa-receipt mr-2"></i> Konfirmasi Bayar
+                    </a>
+                </div>
+
+                <div class="md:col-span-2">
+                    <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-slate-100">
+                        <div class="bg-slate-50 px-6 py-4 border-b">
+                            <h3 class="font-bold text-slate-700"><i class="fas fa-user-edit mr-2 text-primary"></i>Informasi Pendaftaran</h3>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase">Angkatan</label>
+                                <p class="font-semibold text-slate-700" id="data-angkatan">-</p>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase">Tingkat Ujian</label>
+                                <p class="font-semibold text-slate-700" id="data-ujian">-</p>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase">WhatsApp</label>
+                                <p class="font-semibold text-slate-700" id="data-wa">-</p>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase">TTL</label>
+                                <p class="font-semibold text-slate-700" id="data-ttl">-</p>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase">Alamat Lengkap</label>
+                                <p class="font-semibold text-slate-700" id="data-alamat">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="alert-kualifikasi" class="hidden mt-6 bg-emerald-50 border border-emerald-200 p-4 rounded-xl flex items-start space-x-3">
+                        <i class="fas fa-info-circle text-primary mt-1"></i>
+                        <p class="text-sm text-emerald-800">
+                            Selamat! Anda telah <strong>Lolos Kualifikasi</strong>. Silakan hubungi pelatih masing-masing untuk instruksi teknis ujian selanjutnya.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Ambil data sesi login
+            const session = JSON.parse(localStorage.getItem('currentUserProfile'));
+
+            // 2. Proteksi Halaman
+            if (!session || session.role !== 'Siswa') {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // 3. Ambil data TERBARU dari "database" agar sinkron dengan perubahan Admin
+            const allStudents = JSON.parse(localStorage.getItem('allStudentsData')) || [];
+            const studentData = allStudents.find(s => s.email === session.email) || session;
+
+            // 4. Tampilkan Data ke UI
+            document.getElementById('display-nama').textContent = studentData.nama;
+            document.getElementById('display-email').textContent = studentData.email;
+            document.getElementById('data-angkatan').textContent = studentData.angkatan || '-';
+            document.getElementById('data-ujian').textContent = studentData.ujian || '-';
+            document.getElementById('data-wa').textContent = studentData.whatsapp || '-';
+            document.getElementById('data-ttl').textContent = studentData.ttl || '-';
+            document.getElementById('data-alamat').textContent = studentData.alamat || '-';
+            
+            // Inisial Nama
+            const nameParts = studentData.nama.split(' ');
+            const initials = nameParts.length > 1 ? nameParts[0][0] + nameParts[1][0] : nameParts[0][0];
+            document.getElementById('initials').textContent = initials.toUpperCase();
+
+            // 5. Logika Status (Sinkron dengan Admin)
+            const status = studentData.status;
+            const statusEl = document.getElementById('display-status');
+            const statusContainer = document.getElementById('status-container');
+            const statusDesc = document.getElementById('status-desc');
+            const alertBox = document.getElementById('alert-kualifikasi');
+
+            statusEl.textContent = status;
+
+            if (status.includes('Kualifikasi')) {
+                statusContainer.classList.add('border-emerald-500');
+                statusEl.className = "text-xl font-bold text-emerald-600";
+                statusDesc.textContent = "Data Anda telah diverifikasi. Anda dinyatakan layak mengikuti ujian.";
+                alertBox.classList.remove('hidden');
+            } else if (status.includes('Diskualifikasi')) {
+                statusContainer.classList.add('border-red-500');
+                statusEl.className = "text-xl font-bold text-red-600";
+                statusDesc.textContent = "Mohon maaf, Anda dinyatakan diskualifikasi. Hubungi admin untuk informasi lebih lanjut.";
+            } else {
+                statusContainer.classList.add('border-yellow-500');
+                statusEl.className = "text-xl font-bold text-yellow-600";
+            }
+
+            // 6. Fungsi Logout
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                localStorage.removeItem('currentUserProfile');
+                window.location.href = 'login.html';
+            });
+        });
+    </script>
+</body>
+</html>

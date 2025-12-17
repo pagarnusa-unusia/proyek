@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Beranda | PAGARNUSA UNUSIA</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // Warna kustom
+                        primary: '#1B7548', // Hijau Pagar Nusa
+                        primaryDark: '#145c38' // Hijau gelap
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth; 
+        }
+        /* Style untuk membuat garis bawah menu aktif */
+        .nav-link.active {
+            text-decoration: underline;
+            text-underline-offset: 6px;
+            text-decoration-thickness: 2px;
+            text-decoration-color: white; 
+        }
+        /* Penyesuaian agar smooth scroll dengan offset header */
+        :target::before {
+            content: "";
+            display: block;
+            height: 64px; /* Sesuaikan dengan tinggi header */
+            margin-top: -64px; /* Sesuaikan dengan tinggi header */
+        }
+        /* Fix untuk link pendaftaran di bagian achievement agar tidak overflow */
+        .break-word-sm {
+            word-break: break-word;
+        }
+        @media (max-width: 640px) {
+            .break-word-sm {
+                word-break: break-all;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-gradient-to-b from-emerald-50 to-slate-50 text-slate-800">
+
+    <header id="main-header" class="sticky top-0 z-50 bg-primary text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            
+            <div class="flex items-center space-x-3">
+                <img src="logopn.png" alt="Logo PAGARNUSA" class="h-10">
+                <h1 class="text-sm font-bold tracking-wide leading-tight uppercase">
+                    PAGARNUSA<br>UNUSIA
+                </h1>
+            </div>
+            
+            <div class="flex items-center space-x-4"> 
+                
+                <nav id="nav-desktop" class="hidden md:flex space-x-8">
+                    <a href="#hero-section" class="nav-link active text-sm font-medium hover:text-slate-200 transition">Beranda</a>
+                    <a href="#announcement-section" class="nav-link text-sm font-medium hover:text-slate-200 transition">Informasi</a>
+                </nav>
+
+                <div class="hidden md:flex space-x-2">
+                    <a href="login.html" class="nav-link bg-primaryDark px-3 py-1 rounded-lg hover:bg-white hover:text-primary transition text-sm">
+                        Login
+                    </a>
+                    <a href="daftar.html" class="nav-link bg-yellow-500 text-slate-900 px-3 py-1 rounded-lg hover:bg-yellow-600 transition text-sm font-medium">
+                        Daftar
+                    </a>
+                </div>
+
+                <button id="nav-toggle" class="md:hidden p-2">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <nav id="nav-mobile" class="hidden md:hidden absolute w-full bg-primaryDark shadow-md">
+            <a href="#hero-section" class="nav-link block px-4 py-3 text-sm font-medium active hover:bg-primary/50 transition border-t border-primaryDark/50">Beranda</a>
+            <a href="#announcement-section" class="nav-link block px-4 py-3 text-sm font-medium hover:bg-primary/50 transition">Informasi</a>
+            <a href="login.html" class="nav-link block px-4 py-3 text-sm font-medium hover:bg-primary/50 transition">Login</a>
+            <a href="daftar.html" class="nav-link block px-4 py-3 text-sm font-medium bg-yellow-500 text-slate-900 hover:bg-yellow-600 transition border-b border-primaryDark/50">Daftar</a>
+        </nav>
+    </header>
+
+    <main class="flex-1 container mx-auto px-4 py-8">
+
+        <section id="hero-section" class="text-center md:text-left bg-white rounded-xl shadow-xl p-8 md:p-12 mb-12">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-primary mb-4">
+                Selamat Datang di PAGARNUSA UNUSIA
+            </h2>
+            <p class="text-xl text-slate-600 mb-6">
+                Mengembangkan potensi diri, menguatkan spiritualitas, dan menjunjung tinggi nilai-nilai tradisi.
+            </p>
+            <p class="text-slate-700 max-w-3xl mx-auto md:mx-0 mb-8">
+                Pencak Silat Nahdlatul Ulama Pagar Nusa Rayon Universitas Nahdlatul Ulama Indonesia (UNUSIA) adalah wadah bagi mahasiswa untuk berkreasi, berprestasi, dan melestarikan budaya bangsa.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="daftar.html" 
+                    class="bg-primary hover:bg-primaryDark text-white font-semibold py-3 px-8 rounded-lg transition transform hover:scale-105 shadow-md">
+                    <i class="fas fa-user-plus mr-2"></i> Daftar UKT
+                </a>
+                <a href="#announcement-section" 
+                    class="bg-white border-2 border-primary text-primary hover:bg-primary/10 font-semibold py-3 px-8 rounded-lg transition transform hover:scale-105 shadow-md">
+                    <i class="fas fa-info-circle mr-2"></i> Baca Informasi
+                </a>
+            </div>
+        </section>
+
+        <section id="announcement-section" class="bg-white rounded-xl shadow-2xl p-8 md:p-12 mt-8 border-t-4 border-primary">
+            <h2 class="text-3xl font-extrabold text-primaryDark mb-2 flex items-center">
+                <span class="mr-2 text-4xl">📢</span> Ujian Kenaikan Tingkat IV
+            </h2>
+            <p class="text-xl font-semibold text-slate-600 mb-6 border-b pb-4">
+                PSNU PAGARNUSA UNUSIA
+            </p>
+
+            <div class="bg-blue-50 p-4 rounded-lg mb-6 border-l-4 border-blue-500">
+                <p class="text-sm italic text-blue-800">Assalamu’alaikum warahmatullahi wabarakatuh.</p>
+                <p class="text-base font-medium text-slate-800 mt-2">
+                    **Tema:** Mengukir Bakti, Memuliakan Marwah Kolektif Santri PSNU PAGARNUSA
+                </p>
+            </div>
+
+            <div class="space-y-6">
+                <div class="p-5 bg-emerald-50 rounded-xl border-l-4 border-emerald-600 shadow-md">
+                    <h3 class="font-bold text-xl text-emerald-800 mb-3 flex items-center">
+                        <span class="mr-2 text-2xl">📅</span> Linimasa Kegiatan
+                    </h3>
+                    <ul class="list-disc list-inside space-y-2 text-slate-700 ml-4">
+                        <li>**Pendaftaran dibuka:** 16 Desember 2025</li>
+                        <li>**Pendaftaran ditutup:** 31 Desember 2025</li>
+                        <li>**Pelaksanaan Ujian:** 10–11 Januari 2026</li>
+                    </ul>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="p-5 bg-amber-50 rounded-xl border-l-4 border-amber-600 shadow-md">
+                        <h3 class="font-bold text-xl text-amber-800 mb-3 flex items-center">
+                            <span class="mr-2 text-2xl">📍</span> Lokasi Pelaksanaan
+                        </h3>
+                        <p class="text-slate-700">Gelanggang Olahraga Kampus UNUSIA</p>
+                    </div>
+                    
+                    <div class="p-5 bg-indigo-50 rounded-xl border-l-4 border-indigo-600 shadow-md">
+                        <h3 class="font-bold text-xl text-indigo-800 mb-3 flex items-center">
+                            <span class="mr-2 text-2xl">🔗</span> Link Pendaftaran
+                        </h3>
+                        <a href="daftar.html" class="text-indigo-600 hover:text-indigo-800 font-semibold underline break-word-sm">
+                            Klik di sini untuk mendaftar Ujian
+                        </a>
+                    </div>
+                </div>
+
+                <div class="p-5 bg-red-50 rounded-xl border-l-4 border-red-600 shadow-md">
+                    <h3 class="font-bold text-xl text-red-800 mb-3 flex items-center">
+                        <span class="mr-2 text-2xl">📞</span> Contact Person
+                    </h3>
+                    <p class="text-slate-700 break-word-sm">Silakan hubungi: **0857-1523-2441**</p>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-4 border-t border-slate-200 text-sm text-slate-600">
+                <p>Diharapkan seluruh santri yang memenuhi syarat dapat segera mendaftar dan mempersiapkan diri dengan sebaik-baiknya.</p>
+                <p class="mt-3">Atas perhatian dan partisipasinya kami ucapkan terima kasih.</p>
+                <p class="mt-4 font-semibold">Wassalamu’alaikum warahmatullahi wabarakatuh.</p>
+                <p class="mt-2 text-xs">Hormat kami,</p>
+                <p class="font-bold text-primaryDark">Panitia Pelaksana PSNU PAGARNUSA UNUSIA</p>
+            </div>
+
+            <a href="#hero-section" class="mt-6 inline-block text-primary hover:text-primaryDark text-sm underline">Kembali ke atas</a>
+        </section>
+
+        <div class="my-10 border-t border-slate-300"></div>
+
+        <section id="achievement-section" class="bg-white rounded-xl shadow-2xl p-8 md:p-12 border-t-4 border-yellow-500">
+            <h2 class="text-3xl font-extrabold text-slate-800 mb-6 flex items-center">
+                <span class="mr-2 text-4xl text-yellow-600">🏆</span> Prestasi Membanggakan
+            </h2>
+            
+            <div class="w-full h-auto bg-gray-200 rounded-lg overflow-hidden mb-6 shadow-lg">
+                <img src="berita_juara.jpg" alt="Foto Kontingen Unusia UIKA Championship 2 2025" class="w-full h-auto object-cover" loading="lazy">
+                <div class="p-3 text-sm text-center text-gray-500 italic">
+                    Placeholder Foto Kontingen UKM Pencak Silat UNUSIA
+                </div>
+            </div>
+
+            <div class="mb-6 text-slate-700">
+                <p class="font-semibold text-lg mb-3">
+                    Mahasiswa Universitas Nahdlatul Ulama Indonesia (Unusia) kembali menorehkan prestasi membanggakan pada ajang **UIKA Championship 2 2025 Tingkat Nasional** yang digelar pada **5–7 Desember 2025** di GOR Gymnasium SV IPB.
+                </p>
+                <p class="text-base">
+                    Kontingen Unusia tampil gemilang dengan meraih **delapan gelar juara** dari kategori tanding dan seni.
+                </p>
+            </div>
+
+            <div class="p-5 bg-yellow-50 rounded-xl border-l-4 border-yellow-600 shadow-md mb-6">
+                <h3 class="font-bold text-xl text-yellow-800 mb-3 flex items-center">
+                    <span class="mr-2">🥇</span> Peraih Prestasi
+                </h3>
+                <ul class="space-y-2 text-slate-700">
+                    <li class="flex justify-between items-start border-b border-yellow-100 pb-1 flex-wrap">
+                        <span class="font-medium mr-2">M. Nizam Hasbi F</span>
+                        <span class="text-sm font-semibold text-yellow-700 text-right break-word-sm">Juara 1 Tanding Kelas A (SPI)</span>
+                    </li>
+                    <li class="flex justify-between items-start border-b border-yellow-100 pb-1 flex-wrap">
+                        <span class="font-medium mr-2">Ramlan</span>
+                        <span class="text-sm font-semibold text-yellow-700 text-right break-word-sm">Juara 1 Tanding Kelas C (SPI)</span>
+                    </li>
+                    <li class="flex justify-between items-start border-b border-yellow-100 pb-1 flex-wrap">
+                        <span class="font-medium mr-2">Dinda Ayuni</span>
+                        <span class="text-sm text-right break-word-sm">Juara 2 Seni Tunggal Dewasa (SPI)</span>
+                    </li>
+                    <li class="flex justify-between items-start border-b border-yellow-100 pb-1 flex-wrap">
+                        <span class="font-medium mr-2">Dede Ahmad F.</span>
+                        <span class="text-sm text-right break-word-sm">Juara 2 Tanding Prestasi Kelas Under A (Teknik Informatika)</span>
+                    </li>
+                    <li class="flex justify-between items-start border-b border-yellow-100 pb-1 flex-wrap">
+                        <span class="font-medium mr-2">Dwi-Nur Aini</span>
+                        <span class="text-sm text-right break-word-sm">Juara 2 Tanding Kelas A (PAI)</span>
+                    </li>
+                    <li class="flex justify-between items-start border-b border-yellow-100 pb-1 flex-wrap">
+                        <span class="font-medium mr-2">Hoirul Sambudi</span>
+                        <span class="text-sm text-right break-word-sm">Juara 2 Seni Tunggal Dewasa (Pendidikan Bahasa Inggris)</span>
+                    </li>
+                    <li class="flex justify-between items-start border-b border-yellow-100 pb-1 flex-wrap">
+                        <span class="font-medium mr-2">M. Ibnu Mundzir</span>
+                        <span class="text-sm text-right break-word-sm">Juara 2 Seni Tunggal Baku Dewasa Prestasi (Teknologi Agroindustri)</span>
+                    </li>
+                    <li class="flex justify-between items-start flex-wrap">
+                        <span class="font-medium mr-2">Khairun Anwar</span>
+                        <span class="text-sm text-right break-word-sm">Juara 3 Tanding Prestasi Kelas A (SPI)</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bg-gray-50 p-5 rounded-xl shadow-inner border-l-4 border-slate-400">
+                <h3 class="font-bold text-lg text-slate-800 mb-2 flex items-center">
+                    <span class="mr-2">🎙️</span> Pesan dari Pelatih
+                </h3>
+                <p class="text-sm italic text-slate-600 mb-3">
+                    Pendampingan oleh **Misbahul Muniruddin** (Alumni Unusia PAI 2025)
+                </p>
+                <blockquote class="text-slate-700 border-l-2 pl-4 ml-2 italic">
+                    "Bukan hanya medali yang membuat saya bangga, tapi melihat mereka bertanding dengan baik dan aman. Itu sudah membuat saya sangat bersyukur. Teruslah berlatih dan jangan mudah menyerah. Kesuksesan itu hasil dari proses panjang, jadi tetap fokus dan percaya bahwa usaha tidak akan mengkhianati hasil.”
+                </blockquote>
+            </div>
+
+            <p class="mt-6 text-sm text-slate-600">
+                Prestasi kontingen Unusia di UIKA Championship 2 2025 diharapkan dapat menjadi pemantik semangat bagi mahasiswa untuk terus berkiprah dan membawa nama baik kampus di berbagai ajang kompetisi lainnya.
+            </p>
+
+            <a href="#hero-section" class="mt-6 inline-block text-primary hover:text-primaryDark text-sm underline">Kembali ke atas</a>
+        </section>
+
+    </main>
+
+    <footer class="bg-primary text-white text-center py-3 mt-auto">
+        <p class="text-xs opacity-90">© 2025 PAGARNUSA UNUSIA. Semua hak cipta dilindungi.</p>
+    </footer>
+
+    <script>
+        // Elemen Navigasi Mobile
+        const navToggle = document.getElementById('nav-toggle');
+        const navMobile = document.getElementById('nav-mobile');
+        const navLinks = document.querySelectorAll('.nav-link'); 
+        
+        // Fungsi Toggle Navigasi Mobile
+        navToggle.addEventListener('click', () => {
+            navMobile.classList.toggle('hidden');
+            // Mengubah icon burger menjadi close
+            const icon = navToggle.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
+
+        // Tutup menu mobile saat link diklik
+        navMobile.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                // Hanya tutup jika link mengarah ke hash section
+                if (link.getAttribute('href').startsWith('#')) {
+                    navMobile.classList.add('hidden');
+                    // Mengembalikan icon burger
+                    const icon = navToggle.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+        });
+
+        // Fungsi untuk mengatur menu aktif berdasarkan hash/URL
+        function setActiveLink(hash) {
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                // Hanya aktifkan link Beranda, Informasi, dan Prestasi
+                if (link.getAttribute('href') !== 'daftar.html' && link.getAttribute('href') !== 'login.html' && link.getAttribute('href') === hash) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        // Observasi scroll untuk menentukan menu aktif saat pengguna menggulir
+        const sections = document.querySelectorAll('main section');
+        const header = document.getElementById('main-header');
+        
+        // IntersectionObserver akan menangani penyesuaian scroll
+        const observer = new IntersectionObserver((entries) => {
+            let activeHash = '#hero-section'; // Default
+
+            // Temukan section yang paling dekat dengan bagian atas viewport (termasuk offset header)
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Cek jika bagian atas section sudah melewati titik interaksi (di bawah header)
+                    if (entry.boundingClientRect.top <= header.offsetHeight) {
+                        activeHash = '#' + entry.target.id;
+                    }
+                }
+            });
+            setActiveLink(activeHash);
+
+        }, { 
+            // rootMargin: sesuaikan dengan tinggi header. Misalnya, jika header 64px, gunakan -64px
+            // Ini akan memicu intersection saat section menyentuh bagian bawah header.
+            rootMargin: `-64px 0px -50% 0px`, 
+        }); 
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // Setel link aktif awal dan scroll (jika ada hash di URL)
+        window.onload = function() {
+            const initialHash = window.location.hash || '#hero-section';
+            setActiveLink(initialHash);
+            
+            // Karena sudah ada CSS :target::before, kita tidak perlu JS scroll offset lagi.
+            // Biarkan browser menangani scroll.
+        };
+
+    </script>
+
+</body>
+</html>

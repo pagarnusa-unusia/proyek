@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | PAGARNUSA UNUSIA</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1B7548',
+                        primaryDark: '#145c38'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-[url('https://www.toptal.com/designers/subtlepatterns/patterns/double-bubble-outline.png')] bg-emerald-50 p-4">
+
+    <div class="w-full max-w-md">
+        <div class="glass-effect p-8 rounded-3xl shadow-2xl border border-white relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-primary"></div>
+            
+            <div class="text-center mb-8">
+                <img src="logopn.png" alt="Logo Pagar Nusa" class="h-24 mx-auto mb-4 drop-shadow-md">
+                <h1 class="text-2xl font-bold text-slate-800">Selamat Datang</h1>
+                <p class="text-slate-500 text-sm mt-1">Silakan masuk ke akun Anda</p>
+            </div>
+
+            <form id="loginForm" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Email atau Username Admin</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <input type="text" id="userInput" 
+                            class="w-full pl-10 pr-4 py-3 border-2 border-slate-100 rounded-xl focus:border-primary focus:ring-0 outline-none transition-all" 
+                            placeholder="Contoh: admin / email@anda.com" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Kata Sandi</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" id="passInput" 
+                            class="w-full pl-10 pr-4 py-3 border-2 border-slate-100 rounded-xl focus:border-primary focus:ring-0 outline-none transition-all" 
+                            placeholder="••••••••" required>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-2 italic">*Gunakan "siswa123" untuk akun siswa</p>
+                </div>
+
+                <div id="errorMsg" class="hidden animate-bounce text-center py-2 bg-red-50 text-red-600 text-xs font-bold rounded-lg border border-red-100">
+                    <i class="fas fa-exclamation-circle mr-1"></i> Identitas atau password salah!
+                </div>
+
+                <button type="submit" id="btnSubmit" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-3 rounded-xl shadow-lg shadow-emerald-200 transition-all active:scale-95 flex justify-center items-center">
+                    <span id="btnText">Masuk Sekarang</span>
+                    <i id="btnIcon" class="fas fa-arrow-right ml-2 text-sm transition-transform"></i>
+                </button>
+            </form>
+
+            <div class="mt-8 text-center border-t pt-6">
+                <p class="text-slate-500 text-xs">Belum punya akun? 
+                    <a href="daftar.html" class="text-primary font-bold hover:underline">Daftar Sekarang</a>
+                </p>
+                <a href="index.html" class="inline-block mt-4 text-slate-400 hover:text-primary text-xs transition">
+                    <i class="fas fa-chevron-left mr-1"></i> Kembali ke Beranda
+                </a>
+            </div>
+        </div>
+
+        <p class="text-center text-slate-400 text-[10px] mt-8 uppercase tracking-widest">
+            &copy; 2024 PAGARNUSA UNUSIA - Mandiri & Berprestasi
+        </p>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const btnSubmit = document.getElementById('btnSubmit');
+        const btnText = document.getElementById('btnText');
+        const btnIcon = document.getElementById('btnIcon');
+        const errorMsg = document.getElementById('errorMsg');
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Ambil input
+            const identifier = document.getElementById('userInput').value.trim().toLowerCase();
+            const password = document.getElementById('passInput').value;
+
+            // Efek Loading
+            btnSubmit.disabled = true;
+            btnText.textContent = "Memverifikasi...";
+            btnIcon.className = "fas fa-circle-notch fa-spin ml-2";
+            errorMsg.classList.add('hidden');
+
+            setTimeout(() => {
+                // 1. CEK LOGIN ADMIN
+                // Username: admin, Password: admin123 (Silakan ganti sesuai keinginan)
+                if (identifier === 'admin' && password === 'admin123') {
+                    const adminSession = {
+                        nama: "Administrator Utama",
+                        role: "Admin",
+                        loginAt: new Date().getTime()
+                    };
+                    localStorage.setItem('currentUserProfile', JSON.stringify(adminSession));
+                    window.location.href = 'profil_admin.html';
+                    return;
+                }
+
+                // 2. CEK LOGIN SISWA (Dari database localStorage)
+                const allStudents = JSON.parse(localStorage.getItem('allStudentsData')) || [];
+                // Cari siswa berdasarkan email
+                const student = allStudents.find(s => s.email.toLowerCase() === identifier);
+
+                // Validasi Siswa (Password default: siswa123)
+                if (student && password === 'siswa123') {
+                    const studentSession = {
+                        ...student,
+                        role: "Siswa",
+                        loginAt: new Date().getTime()
+                    };
+                    localStorage.setItem('currentUserProfile', JSON.stringify(studentSession));
+                    window.location.href = 'profil_siswa.html';
+                } else {
+                    // Gagal Login
+                    btnSubmit.disabled = false;
+                    btnText.textContent = "Masuk Sekarang";
+                    btnIcon.className = "fas fa-arrow-right ml-2";
+                    errorMsg.classList.remove('hidden');
+                }
+            }, 1000); // Simulasi delay loading 1 detik
+        });
+    </script>
+</body>
+</html>
