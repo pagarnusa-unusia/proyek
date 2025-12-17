@@ -25,302 +25,214 @@
     <style>
         body { font-family: 'Poppins', sans-serif; }
         .sidebar-link.active { background-color: #145c38; color: white !important; }
-        .modal-overlay { background-color: rgba(0, 0, 0, 0.5); }
-        .modal-content { max-height: 90vh; overflow-y: auto; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col bg-gradient-to-b from-emerald-50 to-slate-50 text-slate-800">
+<body class="bg-slate-50 min-h-screen flex flex-col md:flex-row">
 
-    <header class="sticky top-0 z-50 bg-primary text-white shadow-lg">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <img src="logopn.png" alt="Logo" class="h-10">
-                <h1 class="text-sm font-bold tracking-wide leading-tight uppercase">DASHBOARD<br>ADMIN</h1>
-            </div>
-            <div class="flex items-center space-x-4">
-                <span id="admin-name-display" class="text-sm hidden sm:inline font-medium"></span>
-                <button id="logout-button" class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded-lg text-sm transition">
-                    <i class="fas fa-sign-out-alt mr-1"></i> Logout
-                </button>
+    <aside class="w-full md:w-64 bg-primary text-white flex flex-col shadow-xl z-20">
+        <div class="p-6 border-b border-white/10 flex items-center space-x-3">
+            <img src="logopn.png" alt="Logo" class="h-10">
+            <div>
+                <h1 class="text-sm font-bold uppercase tracking-wider">Dashboard</h1>
+                <p class="text-[10px] opacity-70">Admin Pagar Nusa</p>
             </div>
         </div>
-    </header>
+        
+        <nav class="flex-1 p-4 space-y-2">
+            <a href="#" data-content-id="content-ringkasan" class="sidebar-link active flex items-center space-x-3 px-4 py-3 rounded-lg transition hover:bg-white/10">
+                <i class="fas fa-chart-pie w-5"></i>
+                <span class="text-sm font-medium">Ringkasan</span>
+            </a>
+            <a href="#" data-content-id="content-kelola-peserta" class="sidebar-link flex items-center space-x-3 px-4 py-3 rounded-lg transition hover:bg-white/10">
+                <i class="fas fa-users w-5"></i>
+                <span class="text-sm font-medium">Kelola Peserta</span>
+            </a>
+            <button id="download-csv" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition hover:bg-white/10 text-left">
+                <i class="fas fa-file-csv w-5"></i>
+                <span class="text-sm font-medium">Ekspor Data CSV</span>
+            </button>
+        </nav>
 
-    <main class="flex-1 container mx-auto px-4 py-8">
-        <div class="flex flex-col md:flex-row gap-6">
-            <nav class="w-full md:w-64 bg-white rounded-xl shadow-lg p-4 md:sticky md:top-20 h-fit">
-                <h3 class="text-lg font-bold text-primary mb-4 border-b pb-2">Menu Utama</h3>
-                <ul class="space-y-2">
-                    <li>
-                        <a href="#" class="sidebar-link active block px-3 py-2 rounded-lg text-sm transition" data-target="content-ringkasan">
-                            <i class="fas fa-chart-line w-5 mr-2"></i> Ringkasan
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="sidebar-link block px-3 py-2 rounded-lg text-sm text-slate-700 hover:bg-emerald-50 transition" data-target="content-kelola-peserta">
-                            <i class="fas fa-users w-5 mr-2"></i> Kelola Peserta
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+        <div class="p-4 border-t border-white/10">
+            <button id="logout-button" class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition flex items-center justify-center space-x-2">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
 
-            <section class="flex-1">
-                <div id="content-ringkasan">
-                    <h2 class="text-2xl font-bold text-slate-800 mb-6">Statistik Pendaftaran</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-primary">
-                            <p class="text-xs text-slate-500 font-bold uppercase">Total Pendaftar</p>
-                            <p id="stat-total" class="text-3xl font-bold text-slate-800 mt-1">0</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-yellow-500">
-                            <p class="text-xs text-slate-500 font-bold uppercase">Menunggu (Panding)</p>
-                            <p id="stat-pending" class="text-3xl font-bold text-slate-800 mt-1">0</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
-                            <p class="text-xs text-slate-500 font-bold uppercase">Lolos Kualifikasi</p>
-                            <p id="stat-verified" class="text-3xl font-bold text-slate-800 mt-1">0</p>
-                        </div>
+    <main class="flex-1 overflow-y-auto h-screen p-4 md:p-8">
+        
+        <div id="dashboard-content">
+            <div id="content-ringkasan" class="space-y-6">
+                <h2 class="text-2xl font-bold text-slate-800">Ringkasan Pendaftaran</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-yellow-500">
+                        <p class="text-xs text-slate-500 font-bold uppercase mb-1">Total Pending</p>
+                        <h3 id="stat-pending" class="text-3xl font-bold text-slate-800">0</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-green-500">
+                        <p class="text-xs text-slate-500 font-bold uppercase mb-1">Total Lolos</p>
+                        <h3 id="stat-kualifikasi" class="text-3xl font-bold text-slate-800">0</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-red-500">
+                        <p class="text-xs text-slate-500 font-bold uppercase mb-1">Diskualifikasi</p>
+                        <h3 id="stat-diskualifikasi" class="text-3xl font-bold text-slate-800">0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-kelola-peserta" class="hidden space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <h2 class="text-2xl font-bold text-slate-800">Data Peserta UKT</h2>
+                    
+                    <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                        <input type="text" id="participant-search" placeholder="Cari nama..." 
+                            class="px-4 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-primary focus:outline-none">
+                        <select id="status-filter" class="px-4 py-2 rounded-lg border border-slate-300 text-sm focus:outline-none">
+                            <option value="all">Semua Status</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Kualifikasi">Kualifikasi</option>
+                            <option value="Diskualifikasi">Diskualifikasi</option>
+                        </select>
                     </div>
                 </div>
 
-                <div id="content-kelola-peserta" class="hidden">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
-                        <h2 class="text-2xl font-bold text-slate-800">Manajemen Peserta</h2>
-                        <div class="flex flex-col sm:flex-row gap-2">
-                            <input type="text" id="search-input" placeholder="Cari nama..." class="px-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-primary outline-none">
-                            <select id="filter-status" class="px-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-primary outline-none">
-                                <option value="all">Semua Status</option>
-                                <option value="Kualifikasi">Kualifikasi</option>
-                                <option value="Panding">Panding</option>
-                                <option value="Diskualifikasi">Diskualifikasi</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse">
-                                <thead class="bg-slate-50 border-b">
-                                    <tr>
-                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Nama Peserta</th>
-                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Angkatan/Ujian</th>
-                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Status</th>
-                                        <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-center">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="table-body" class="divide-y divide-slate-100">
-                                    </tbody>
-                            </table>
-                        </div>
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 text-slate-600 font-bold">
+                                <tr>
+                                    <th class="px-6 py-4">Nama Peserta</th>
+                                    <th class="px-6 py-4">Angkatan</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="participants-table-body" class="divide-y divide-slate-100">
+                                </tbody>
+                        </table>
                     </div>
                 </div>
-            </section>
+            </div>
         </div>
     </main>
 
-    <div id="modal-edit" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4">
-        <div class="absolute inset-0 modal-overlay" onclick="closeModal()"></div>
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl z-10 modal-content p-6">
-            <div class="flex justify-between items-center mb-6 border-b pb-4">
-                <h3 class="text-xl font-bold text-primary">Edit Lengkap Data Peserta</h3>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-red-500"><i class="fas fa-times text-xl"></i></button>
-            </div>
-            <form id="form-edit" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="hidden" id="edit-index">
-                <div class="md:col-span-2">
-                    <label class="block text-xs font-bold text-slate-500 mb-1">Nama Lengkap</label>
-                    <input type="text" id="edit-nama" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary outline-none" required>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">Email</label>
-                    <input type="email" id="edit-email" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary outline-none" required>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">WhatsApp</label>
-                    <input type="text" id="edit-wa" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">Angkatan</label>
-                    <input type="number" id="edit-angkatan" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1">Tingkat Ujian</label>
-                    <input type="text" id="edit-ujian" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary outline-none">
-                </div>
-                <div class="md:col-span-2">
-                    <label class="block text-xs font-bold text-slate-500 mb-1">Tempat, Tanggal Lahir</label>
-                    <input type="text" id="edit-ttl" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary outline-none">
-                </div>
-                <div class="md:col-span-2">
-                    <label class="block text-xs font-bold text-slate-500 mb-1">Alamat Lengkap</label>
-                    <textarea id="edit-alamat" rows="2" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary outline-none"></textarea>
-                </div>
-                <div class="md:col-span-2">
-                    <label class="block text-xs font-bold text-slate-500 mb-1">Status Verifikasi</label>
-                    <select id="edit-status" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary outline-none">
-                        <option value="Kualifikasi✅️">Kualifikasi✅️</option>
-                        <option value="Panding⏳️">Panding⏳️</option>
-                        <option value="Diskualifikasi❌️">Diskualifikasi❌️</option>
-                    </select>
-                </div>
-                <div class="md:col-span-2 flex justify-end space-x-3 pt-4 border-t">
-                    <button type="button" onclick="closeModal()" class="px-6 py-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition font-bold">Batal</button>
-                    <button type="submit" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primaryDark transition font-bold">Simpan Perubahan</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let allStudents = JSON.parse(localStorage.getItem('allStudentsData')) || [];
 
-<script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwkhHcF2hr9j6ai8uIqHsYXxbHWvk8MPLf2TzqdpbbatmQB5HJH109fMlvXh0-4O7YPxg/exec";
-    let allStudents = [];
+            // 1. Render Statistik
+            function renderStats() {
+                document.getElementById('stat-pending').textContent = allStudents.filter(s => s.status.includes('Pending')).length;
+                document.getElementById('stat-kualifikasi').textContent = allStudents.filter(s => s.status.includes('Kualifikasi')).length;
+                document.getElementById('stat-diskualifikasi').textContent = allStudents.filter(s => s.status.includes('Diskualifikasi')).length;
+            }
 
-    // --- Inisialisasi & Ambil Data ---
-    async function initAdmin() {
-        const profile = JSON.parse(localStorage.getItem('currentUserProfile'));
-        if (!profile || profile.role !== 'Admin') {
-            window.location.href = 'login.html';
-            return;
-        }
-        document.getElementById('admin-name-display').textContent = `Halo, ${profile.nama}`;
-        await refreshData();
-    }
+            // 2. Render Tabel Peserta
+            function renderTable() {
+                const tbody = document.getElementById('participants-table-body');
+                const searchTerm = document.getElementById('participant-search').value.toLowerCase();
+                const statusFilter = document.getElementById('status-filter').value;
 
-    async function refreshData() {
-        document.getElementById('table-body').innerHTML = '<tr><td colspan="4" class="text-center py-10">Memuat data...</td></tr>';
-        try {
-            const response = await fetch(API_URL);
-            allStudents = await response.json();
-            renderStats();
-            renderTable();
-        } catch (err) {
-            console.error("Gagal ambil data:", err);
-        }
-    }
+                tbody.innerHTML = '';
 
-    // --- Fungsi Kirim Data ke AppScript ---
-    async function sendData(paramsObject) {
-        const queryParams = new URLSearchParams(paramsObject);
-        try {
-            // Mode 'no-cors' digunakan karena GAS sering bermasalah dengan CORS POST
-            await fetch(API_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: queryParams.toString()
+                const filtered = allStudents.filter(s => {
+                    const matchName = s.nama.toLowerCase().includes(searchTerm);
+                    const matchStatus = (statusFilter === 'all' || s.status.includes(statusFilter));
+                    return matchName && matchStatus;
+                });
+
+                filtered.forEach((s, index) => {
+                    const statusClass = s.status.includes('Kualifikasi') ? 'bg-green-100 text-green-700' : 
+                                      s.status.includes('Diskualifikasi') ? 'bg-red-100 text-red-700' : 
+                                      'bg-yellow-100 text-yellow-700';
+
+                    const row = `
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="px-6 py-4">
+                                <div class="font-semibold text-slate-800">${s.nama}</div>
+                                <div class="text-xs text-slate-500">${s.email}</div>
+                            </td>
+                            <td class="px-6 py-4 text-slate-600">${s.angkatan}</td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase ${statusClass}">
+                                    ${s.status}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex justify-center space-x-2">
+                                    <button onclick="updateStatus('${s.email}', 'Kualifikasi')" class="p-2 bg-green-500 text-white rounded hover:bg-green-600 title="Loloskan">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button onclick="updateStatus('${s.email}', 'Diskualifikasi')" class="p-2 bg-red-500 text-white rounded hover:bg-red-600" title="Diskualifikasi">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    <button onclick="updateStatus('${s.email}', 'Pending')" class="p-2 bg-yellow-500 text-white rounded hover:bg-yellow-600" title="Reset ke Pending">
+                                        <i class="fas fa-undo"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            }
+
+            // 3. Update Status Logic
+            window.updateStatus = (email, newStatus) => {
+                const index = allStudents.findIndex(s => s.email === email);
+                if (index !== -1) {
+                    allStudents[index].status = newStatus;
+                    // Simpan ke localStorage agar sinkron dengan profil_siswa.html
+                    localStorage.setItem('allStudentsData', JSON.stringify(allStudents));
+                    renderStats();
+                    renderTable();
+                }
+            };
+
+            // 4. Sidebar Navigasi
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    
+                    const target = link.getAttribute('data-content-id');
+                    document.querySelectorAll('#dashboard-content > div').forEach(div => div.classList.add('hidden'));
+                    document.getElementById(target).classList.remove('hidden');
+                    
+                    if(target === 'content-kelola-peserta') renderTable();
+                });
             });
-            setTimeout(refreshData, 1500); // Segarkan data setelah jeda
-            return true;
-        } catch (err) {
-            console.error("Gagal kirim data:", err);
-            return false;
-        }
-    }
 
-    // --- Render UI ---
-    function renderStats() {
-        document.getElementById('stat-total').textContent = allStudents.length;
-        document.getElementById('stat-pending').textContent = allStudents.filter(s => s.status?.includes('Panding')).length;
-        document.getElementById('stat-verified').textContent = allStudents.filter(s => s.status?.includes('Kualifikasi')).length;
-    }
+            // 5. Search & Filter Listener
+            document.getElementById('participant-search').addEventListener('input', renderTable);
+            document.getElementById('status-filter').addEventListener('change', renderTable);
 
-    function renderTable() {
-        const keyword = document.getElementById('search-input').value.toLowerCase();
-        const filter = document.getElementById('filter-status').value;
-        const tbody = document.getElementById('table-body');
+            // 6. Ekspor CSV
+            document.getElementById('download-csv').addEventListener('click', () => {
+                let csv = 'Nama,Email,Angkatan,Ujian,Status\n';
+                allStudents.forEach(s => {
+                    csv += `${s.nama},${s.email},${s.angkatan},${s.ujian},${s.status}\n`;
+                });
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.setAttribute('href', url);
+                a.setAttribute('download', 'Data_Peserta_UKT.csv');
+                a.click();
+            });
 
-        const filtered = allStudents.filter(s => {
-            const matchName = s.nama?.toLowerCase().includes(keyword);
-            const matchStatus = filter === 'all' || s.status?.includes(filter);
-            return matchName && matchStatus;
+            // 7. Logout
+            document.getElementById('logout-button').addEventListener('click', () => {
+                localStorage.removeItem('currentUserProfile');
+                window.location.href = 'login.html';
+            });
+
+            // Initial Run
+            renderStats();
         });
-
-        tbody.innerHTML = filtered.map(s => `
-            <tr class="hover:bg-slate-50 border-b">
-                <td class="px-6 py-4">
-                    <div class="font-bold">${s.nama}</div>
-                    <div class="text-xs text-slate-500">${s.email}</div>
-                </td>
-                <td class="px-6 py-4 text-sm">${s.angkatan} / <span class="text-primary">${s.ujian}</span></td>
-                <td class="px-6 py-4 text-xs font-bold">${s.status}</td>
-                <td class="px-6 py-4 flex justify-center space-x-2">
-                    <button onclick="editStudent('${s.email}')" class="text-blue-600 p-2 hover:bg-blue-50 rounded"><i class="fas fa-edit"></i></button>
-                    <button onclick="quickAction('${s.email}', 'Kualifikasi✅️')" class="text-green-600 p-2 hover:bg-green-50 rounded"><i class="fas fa-check-circle"></i></button>
-                    <button onclick="deleteStudent('${s.email}')" class="text-red-600 p-2 hover:bg-red-50 rounded"><i class="fas fa-trash"></i></button>
-                </td>
-            </tr>
-        `).join('');
-    }
-
-    // --- Actions ---
-    window.quickAction = async (email, newStatus) => {
-        await sendData({ action: "update", email: email, status: newStatus });
-        alert("Status diperbarui!");
-    };
-
-    window.deleteStudent = async (email) => {
-        if (confirm("Hapus data ini secara permanen?")) {
-            await sendData({ action: "delete", email: email });
-            alert("Data dihapus!");
-        }
-    };
-
-    window.editStudent = (email) => {
-        const s = allStudents.find(x => x.email === email);
-        if (s) {
-            document.getElementById('edit-index').value = s.email;
-            document.getElementById('edit-nama').value = s.nama;
-            document.getElementById('edit-email').value = s.email;
-            document.getElementById('edit-wa').value = s.whatsapp || '';
-            document.getElementById('edit-angkatan').value = s.angkatan;
-            document.getElementById('edit-ujian').value = s.ujian;
-            document.getElementById('edit-ttl').value = s.ttl || '';
-            document.getElementById('edit-alamat').value = s.alamat || '';
-            document.getElementById('edit-status').value = s.status;
-            document.getElementById('modal-edit').classList.remove('hidden');
-        }
-    };
-
-    document.getElementById('form-edit').onsubmit = async (e) => {
-        e.preventDefault();
-        const payload = {
-            action: "update",
-            email: document.getElementById('edit-index').value,
-            nama: document.getElementById('edit-nama').value,
-            whatsapp: document.getElementById('edit-wa').value,
-            angkatan: document.getElementById('edit-angkatan').value,
-            ujian: document.getElementById('edit-ujian').value,
-            ttl: document.getElementById('edit-ttl').value,
-            alamat: document.getElementById('edit-alamat').value,
-            status: document.getElementById('edit-status').value
-        };
-        document.getElementById('modal-edit').classList.add('hidden');
-        await sendData(payload);
-        alert("Data berhasil diperbarui!");
-    };
-
-    window.closeModal = () => document.getElementById('modal-edit').classList.add('hidden');
-    document.getElementById('search-input').oninput = renderTable;
-    document.getElementById('filter-status').onchange = renderTable;
-    document.getElementById('logout-button').onclick = () => {
-        localStorage.removeItem('currentUserProfile');
-        window.location.href = 'login.html';
-    };
-
-    // Navigasi Menu
-    document.querySelectorAll('.sidebar-link').forEach(link => {
-        link.onclick = (e) => {
-            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
-            const target = link.dataset.target;
-            document.getElementById('content-ringkasan').classList.toggle('hidden', target !== 'content-ringkasan');
-            document.getElementById('content-kelola-peserta').classList.toggle('hidden', target !== 'content-kelola-peserta');
-        };
-    });
-
-    initAdmin();
-</script>
+    </script>
 </body>
-
 </html>
-
