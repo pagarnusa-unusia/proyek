@@ -171,159 +171,155 @@
         </div>
     </div>
 
-    <script>
-        // Data State
-        let allStudents = JSON.parse(localStorage.getItem('allStudentsData')) || [];
+<script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbwtEWa9hSQ6OZlbQwdZ5X61JjwVkrT3MhXL132bhb-zCwh1Aq88BcS3AraSD9uTZbgLOA/exec";
+    let allStudents = [];
 
-        // DOM Elements
-        const tableBody = document.getElementById('table-body');
-        const adminNameDisplay = document.getElementById('admin-name-display');
+    // --- Inisialisasi & Ambil Data ---
+    async function initAdmin() {
+        const profile = JSON.parse(localStorage.getItem('currentUserProfile'));
+        if (!profile || profile.role !== 'Admin') {
+            window.location.href = 'login.html';
+            return;
+        }
+        document.getElementById('admin-name-display').textContent = `Halo, ${profile.nama}`;
+        await refreshData();
+    }
 
-        // Initialize Admin Session
-        function initAdmin() {
-            const profile = JSON.parse(localStorage.getItem('currentUserProfile'));
-            if (!profile || profile.role !== 'Admin') {
-                window.location.href = 'login.html';
-                return;
-            }
-            adminNameDisplay.textContent = `Halo, ${profile.nama}`;
+    async function refreshData() {
+        document.getElementById('table-body').innerHTML = '<tr><td colspan="4" class="text-center py-10">Memuat data...</td></tr>';
+        try {
+            const response = await fetch(API_URL);
+            allStudents = await response.json();
             renderStats();
             renderTable();
+        } catch (err) {
+            console.error("Gagal ambil data:", err);
         }
+    }
 
-        // Functions
-        function saveToLocal() {
-            localStorage.setItem('allStudentsData', JSON.stringify(allStudents));
-            renderStats();
-            renderTable();
-        }
-
-        function renderStats() {
-            document.getElementById('stat-total').textContent = allStudents.length;
-            document.getElementById('stat-pending').textContent = allStudents.filter(s => s.status.includes('Panding')).length;
-            document.getElementById('stat-verified').textContent = allStudents.filter(s => s.status.includes('Kualifikasi')).length;
-        }
-
-        function getBadge(status) {
-            if (status.includes('Kualifikasi')) return `<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-bold">KUALIFIKASI</span>`;
-            if (status.includes('Panding')) return `<span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-[10px] font-bold">PANDING</span>`;
-            return `<span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-[10px] font-bold">DISKUALIFIKASI</span>`;
-        }
-
-        function renderTable() {
-            const keyword = document.getElementById('search-input').value.toLowerCase();
-            const filter = document.getElementById('filter-status').value;
-
-            const filtered = allStudents.filter(s => {
-                const matchName = s.nama.toLowerCase().includes(keyword);
-                const matchStatus = filter === 'all' || s.status.includes(filter);
-                return matchName && matchStatus;
+    // --- Fungsi Kirim Data ke AppScript ---
+    async function sendData(paramsObject) {
+        const queryParams = new URLSearchParams(paramsObject);
+        try {
+            // Mode 'no-cors' digunakan karena GAS sering bermasalah dengan CORS POST
+            await fetch(API_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: queryParams.toString()
             });
-
-            tableBody.innerHTML = filtered.map((s, idx) => `
-                <tr class="hover:bg-slate-50 transition">
-                    <td class="px-6 py-4">
-                        <div class="font-bold text-slate-800">${s.nama}</div>
-                        <div class="text-xs text-slate-500">${s.email}</div>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-slate-600">
-                        ${s.angkatan} / <span class="font-medium text-primary">${s.ujian}</span>
-                    </td>
-                    <td class="px-6 py-4">${getBadge(s.status)}</td>
-                    <td class="px-6 py-4">
-                        <div class="flex justify-center space-x-2">
-                            <button onclick="editStudent('${s.email}')" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition" title="Edit Lengkap">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button onclick="quickAction('${s.email}', 'Kualifikasi✅️')" class="p-2 text-green-600 hover:bg-green-50 rounded-lg transition" title="Kualifikasi Cepat">
-                                <i class="fas fa-check-circle"></i>
-                            </button>
-                            <button onclick="deleteStudent('${s.email}')" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition" title="Hapus Permanen">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
+            setTimeout(refreshData, 1500); // Segarkan data setelah jeda
+            return true;
+        } catch (err) {
+            console.error("Gagal kirim data:", err);
+            return false;
         }
+    }
 
-        // CRUD Actions
-        window.quickAction = (email, newStatus) => {
-            const index = allStudents.findIndex(s => s.email === email);
-            if (index !== -1) {
-                allStudents[index].status = newStatus;
-                saveToLocal();
-            }
-        };
+    // --- Render UI ---
+    function renderStats() {
+        document.getElementById('stat-total').textContent = allStudents.length;
+        document.getElementById('stat-pending').textContent = allStudents.filter(s => s.status?.includes('Panding')).length;
+        document.getElementById('stat-verified').textContent = allStudents.filter(s => s.status?.includes('Kualifikasi')).length;
+    }
 
-        window.editStudent = (email) => {
-            const s = allStudents.find(s => s.email === email);
-            if (s) {
-                document.getElementById('edit-index').value = allStudents.indexOf(s);
-                document.getElementById('edit-nama').value = s.nama || '';
-                document.getElementById('edit-email').value = s.email || '';
-                document.getElementById('edit-wa').value = s.whatsapp || '';
-                document.getElementById('edit-angkatan').value = s.angkatan || '';
-                document.getElementById('edit-ujian').value = s.ujian || '';
-                document.getElementById('edit-ttl').value = s.ttl || '';
-                document.getElementById('edit-alamat').value = s.alamat || '';
-                document.getElementById('edit-status').value = s.status;
-                document.getElementById('modal-edit').classList.remove('hidden');
-            }
-        };
+    function renderTable() {
+        const keyword = document.getElementById('search-input').value.toLowerCase();
+        const filter = document.getElementById('filter-status').value;
+        const tbody = document.getElementById('table-body');
 
-        window.deleteStudent = (email) => {
-            if (confirm(`Hapus data ${email} secara permanen?`)) {
-                allStudents = allStudents.filter(s => s.email !== email);
-                saveToLocal();
-            }
-        };
-
-        window.closeModal = () => document.getElementById('modal-edit').classList.add('hidden');
-
-        // Form Submit
-        document.getElementById('form-edit').onsubmit = (e) => {
-            e.preventDefault();
-            const idx = document.getElementById('edit-index').value;
-            allStudents[idx] = {
-                ...allStudents[idx],
-                nama: document.getElementById('edit-nama').value,
-                email: document.getElementById('edit-email').value,
-                whatsapp: document.getElementById('edit-wa').value,
-                angkatan: document.getElementById('edit-angkatan').value,
-                ujian: document.getElementById('edit-ujian').value,
-                ttl: document.getElementById('edit-ttl').value,
-                alamat: document.getElementById('edit-alamat').value,
-                status: document.getElementById('edit-status').value
-            };
-            saveToLocal();
-            closeModal();
-            alert('Data berhasil diperbarui!');
-        };
-
-        // Navigation & Filter
-        document.querySelectorAll('.sidebar-link').forEach(link => {
-            link.onclick = (e) => {
-                e.preventDefault();
-                document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-                
-                const target = link.dataset.target;
-                document.getElementById('content-ringkasan').classList.add('hidden');
-                document.getElementById('content-kelola-peserta').classList.add('hidden');
-                document.getElementById(target).classList.remove('hidden');
-            }
+        const filtered = allStudents.filter(s => {
+            const matchName = s.nama?.toLowerCase().includes(keyword);
+            const matchStatus = filter === 'all' || s.status?.includes(filter);
+            return matchName && matchStatus;
         });
 
-        document.getElementById('search-input').oninput = renderTable;
-        document.getElementById('filter-status').onchange = renderTable;
-        document.getElementById('logout-button').onclick = () => {
-            localStorage.removeItem('currentUserProfile');
-            window.location.href = 'login.html';
-        };
+        tbody.innerHTML = filtered.map(s => `
+            <tr class="hover:bg-slate-50 border-b">
+                <td class="px-6 py-4">
+                    <div class="font-bold">${s.nama}</div>
+                    <div class="text-xs text-slate-500">${s.email}</div>
+                </td>
+                <td class="px-6 py-4 text-sm">${s.angkatan} / <span class="text-primary">${s.ujian}</span></td>
+                <td class="px-6 py-4 text-xs font-bold">${s.status}</td>
+                <td class="px-6 py-4 flex justify-center space-x-2">
+                    <button onclick="editStudent('${s.email}')" class="text-blue-600 p-2 hover:bg-blue-50 rounded"><i class="fas fa-edit"></i></button>
+                    <button onclick="quickAction('${s.email}', 'Kualifikasi✅️')" class="text-green-600 p-2 hover:bg-green-50 rounded"><i class="fas fa-check-circle"></i></button>
+                    <button onclick="deleteStudent('${s.email}')" class="text-red-600 p-2 hover:bg-red-50 rounded"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+        `).join('');
+    }
 
-        // Run
-        initAdmin();
-    </script>
+    // --- Actions ---
+    window.quickAction = async (email, newStatus) => {
+        await sendData({ action: "update", email: email, status: newStatus });
+        alert("Status diperbarui!");
+    };
+
+    window.deleteStudent = async (email) => {
+        if (confirm("Hapus data ini secara permanen?")) {
+            await sendData({ action: "delete", email: email });
+            alert("Data dihapus!");
+        }
+    };
+
+    window.editStudent = (email) => {
+        const s = allStudents.find(x => x.email === email);
+        if (s) {
+            document.getElementById('edit-index').value = s.email;
+            document.getElementById('edit-nama').value = s.nama;
+            document.getElementById('edit-email').value = s.email;
+            document.getElementById('edit-wa').value = s.whatsapp || '';
+            document.getElementById('edit-angkatan').value = s.angkatan;
+            document.getElementById('edit-ujian').value = s.ujian;
+            document.getElementById('edit-ttl').value = s.ttl || '';
+            document.getElementById('edit-alamat').value = s.alamat || '';
+            document.getElementById('edit-status').value = s.status;
+            document.getElementById('modal-edit').classList.remove('hidden');
+        }
+    };
+
+    document.getElementById('form-edit').onsubmit = async (e) => {
+        e.preventDefault();
+        const payload = {
+            action: "update",
+            email: document.getElementById('edit-index').value,
+            nama: document.getElementById('edit-nama').value,
+            whatsapp: document.getElementById('edit-wa').value,
+            angkatan: document.getElementById('edit-angkatan').value,
+            ujian: document.getElementById('edit-ujian').value,
+            ttl: document.getElementById('edit-ttl').value,
+            alamat: document.getElementById('edit-alamat').value,
+            status: document.getElementById('edit-status').value
+        };
+        document.getElementById('modal-edit').classList.add('hidden');
+        await sendData(payload);
+        alert("Data berhasil diperbarui!");
+    };
+
+    window.closeModal = () => document.getElementById('modal-edit').classList.add('hidden');
+    document.getElementById('search-input').oninput = renderTable;
+    document.getElementById('filter-status').onchange = renderTable;
+    document.getElementById('logout-button').onclick = () => {
+        localStorage.removeItem('currentUserProfile');
+        window.location.href = 'login.html';
+    };
+
+    // Navigasi Menu
+    document.querySelectorAll('.sidebar-link').forEach(link => {
+        link.onclick = (e) => {
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+            const target = link.dataset.target;
+            document.getElementById('content-ringkasan').classList.toggle('hidden', target !== 'content-ringkasan');
+            document.getElementById('content-kelola-peserta').classList.toggle('hidden', target !== 'content-kelola-peserta');
+        };
+    });
+
+    initAdmin();
+</script>
 </body>
+
 </html>
